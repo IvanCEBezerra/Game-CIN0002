@@ -16,7 +16,7 @@ rodando = True
 player_pos = pygame.Vector2(x/2 , y/2)
 
 'Arquivos de imagens do jogo'
-fundo = pygame.image.load("C:\Users\ivanc\Desktop\CIn UFPE\JOGO\Arquivos_de_imagem").convert()
+fundo = pygame.image.load("enhanced_battlefield_map.jpg").convert()
 
 'Variaveis do jogo'
 velocidade = 50
