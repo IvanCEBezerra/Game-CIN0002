@@ -4,7 +4,7 @@ import constantes
 from Hitabox import hitbox as hitbox
 from GerenciadorColecionaveis import GerenciadorColecionaveis as gc
 from menu import Menu
-from inimigos import inimigo_horizontal
+from inimigos import inimigo_horizontal, kamikaze
 import random
 
 def spawnar_inimigo():
@@ -12,8 +12,13 @@ def spawnar_inimigo():
     pos_x = random.randint(20, x - 50)  # Garante que o inimigo não saia da tela
     pos_y = 50
 
+    tipo_inimigo = random.randint(0, 1)  # Gera um número aleatório para escolher o tipo de inimigo (0 ou 1)
+
     # Cria uma nova instância do inimigo
-    inimigo = inimigo_horizontal(pos_x, pos_y, 'Imagens/aviao_reto.png')
+    if tipo_inimigo == 0:
+        inimigo = inimigo_horizontal(pos_x, pos_y, 'Imagens/aviao_reto.png')
+    elif tipo_inimigo == 1:
+        inimigo = kamikaze(pos_x, pos_y, 'Imagens/aviao_reto.png')
 
     # Adiciona o inimigo ao grupo de inimigos
     grupo_inimigos.add(inimigo)

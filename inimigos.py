@@ -34,9 +34,9 @@ class kamikaze(hitbox):
         # Move o inimigo horizontalmente de acordo com sua direção e velocidade
         self.mover_vertical(self.velocidade)
 
-        # Inverte a direção se o inimigo atingir as bordas da tela
-        if self.rect.left < 0 or self.rect.right > constantes.X:
-            self.direcao *= -1
+        # destroi o inimigo se ele sair da tela
+        if self.rect.top > constantes.Y:
+            self.kill()
 
     def update(self):
         # Atualiza o movimento do inimigo
