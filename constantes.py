@@ -1,0 +1,14 @@
+X = 1280
+Y = 720
+FPS = 30
+INTERVALO_COLETAVEIS = 5 # intervalo de exibição dos coletaveis
+DURACAO_TIRO = 8 # Duração dos tiros em segundos
+DURACAO_ESCUDO = 8 #duraçao do escudo em segundos
+COUNTDOWN_TIROS = 0 # Contador do tempo de duração dos tiros e do lil aviao
+COUNTDOWN_ESCUDO = 0 #contador do tempo de duração do escudo
+TIRO_DEFAULT = 0 # id do tiro normal
+TIRO_BOMBA = 1 # id do tiro bomba
+ESCUDO_ON = 2 # id do escudo
+ESCUDO_OFF = 3 # id do escudo
+TIRO_TRIPLO = 4 # id do tiro triplo
+TIRO_LIL = 5 # id do tiro lil

@@ -1,6 +1,10 @@
+
 # CInFlight
 import pygame
-
+import constantes
+from Hitabox import hitbox as hitbox
+from GerenciadorColecionaveis import GerenciadorColecionaveis as gc
+=======
 from menu import Menu
 
 # Define uma nova classe hitbox com as mesmas propriedades da classe Sprite do pygame
@@ -10,32 +14,33 @@ class hitbox (pygame.sprite.Sprite):
         # Chama o construtor da classe base Sprite para inicializar as propriedades padrão de um sprite
         pygame.sprite.Sprite.__init__(self)
 
-        # O hitbox terá sua imagem baseada em um arquivo de imagem, que será direcionado através de um caminho(pathway) do diretório
-        self.image = pygame.image.load(diretorio)
+#         # O hitbox terá sua imagem baseada em um arquivo de imagem, que será direcionado através de um caminho(pathway) do diretório
+#         self.image = pygame.image.load(diretorio)
 
-        # O retângulo que definirá o hitbox em si terá suas proporções baseadas na imagem recebida
-        self.rect = self.image.get_rect()
+#         # O retângulo que definirá o hitbox em si terá suas proporções baseadas na imagem recebida
+#         self.rect = self.image.get_rect()
 
-        # A posição do hitbox na tela será dada por um x e um y
-        self.rect.center = [x, y]
+#         # A posição do hitbox na tela será dada por um x e um y
+#         self.rect.center = [x, y]
 
-        # Define se está ativado ou não (caso o hitbox seja de uma bomba, ou outra coisa que precisa ser ativada)
-        self.ativacao = None
+#         # Define se está ativado ou não (caso o hitbox seja de uma bomba, ou outra coisa que precisa ser ativada)
+#         self.ativacao = None
 
-        # Define a posição de spawn do hitbox (útil para balas)
-        self.posicao_spawn = None
+#         # Define a posição de spawn do hitbox (útil para balas)
+#         self.posicao_spawn = None
 
-        # Define o contador do tempo de existência do hitbox, caso ele seja feito para desaparecer depois de um tempo
-        self.tempo_existencia = 0
+#         # Define o contador do tempo de existência do hitbox, caso ele seja feito para desaparecer depois de um tempo
+#         self.tempo_existencia = 0
 
+#         self.id = id  # Define o id do hitbox (útil para identificar qual é o hitbox, caso tenha mais de um na tela)
 
-    # Move horizontalmente a posição do hitbox na tela, em uma quantidade de pixels predefinida
-    def mover_horizontal(self, qtd_pixels):
-        self.rect.x += qtd_pixels
+#     # Move horizontalmente a posição do hitbox na tela, em uma quantidade de pixels predefinida
+#     def mover_horizontal(self, qtd_pixels):
+#         self.rect.x += qtd_pixels
     
-    # Move verticalmente a posição do hitbox na tela, em uma quantidade de pixels predefinida
-    def mover_vertical(self, qtd_pixels):
-        self.rect.y += qtd_pixels
+#     # Move verticalmente a posição do hitbox na tela, em uma quantidade de pixels predefinida
+#     def mover_vertical(self, qtd_pixels):
+#         self.rect.y += qtd_pixels
 
 # Inicializa o pygame
 pygame.init()
@@ -99,6 +104,19 @@ tipo_tiro = "Default"
 # Cooldown do tiro (intervalo entre os tiros)
 cooldown = fps/3
 
+# intervalo_coletaveis = 5 # intervalo de exibição dos coletaveis
+# coletavel = hitbox(x/2, y/3, 'Imagens/col_bomba.png')
+# grupo_coletavel = pygame.sprite.Group()
+# grupo_rodape = pygame.sprite.Group()
+# grupo_coletavel.add(coletavel)  # Adiciona o coletável ao grupo de coletáveis
+# coletavel.ativacao = False
+# rodape = False
+# duracao_tiro = 8 # Duração dos tiros em segundos
+# duracao_escudo = 8 #duraçao do escudo em segundos
+# countdown_tiros = 0 # Contador do tempo de duração dos tiros e do lil aviao
+# countdown_escudo = 0 #contador do tempo de duração do escudo
+gerenciador_coletaveis = gc(escudo)
+
 # Variável que verifica se o jogo está aberto
 rodando = True
 
@@ -115,6 +133,102 @@ while rodando:
     
     # Verifica as teclas pressionadas
     tecla = pygame.key.get_pressed()
+
+    # if not coletavel.ativacao:
+    #     #fazer os coletáveis aparecerem aproximadamente de 10 em 10 segundos
+    #     if random.randint(0, fps * intervalo_coletaveis) == 0:
+    #         coletavel.kill()
+
+    #         #gerar aleatóriamente qual será o coletável
+    #         col_aleatorio = random.randint(0, 3)
+    #         #gerar uma posição aleatória para o coletável aparecer na tela
+    #         pos_x_aleatorio = random.randint(x*0.1, x*0.9)
+
+    #         if col_aleatorio == 0:
+    #             coletavel = hitbox(pos_x_aleatorio, 0, 'Imagens/pubomba.png', id = 1)
+    #         elif col_aleatorio == 1:
+    #             coletavel = hitbox(pos_x_aleatorio, 0, 'Imagens/puescudo.png', id = 2)
+    #         elif col_aleatorio == 2:
+    #             coletavel = hitbox(pos_x_aleatorio, 0, 'Imagens/putiro3.png', id = 3)
+    #         else:
+    #             coletavel = hitbox(pos_x_aleatorio, 0, 'Imagens/col_lil.png', id = 4)
+
+    #         grupo_coletavel.add(coletavel)  # Adiciona o coletável ao grupo de coletáveis
+    #         coletavel.ativacao = True
+    #         print('coletavel entrou na tela')
+
+    # if coletavel.ativacao:
+    #     coletavel.mover_vertical(6)
+
+    #     if aviaozinho.rect.colliderect(coletavel.rect):
+    #         coletavel.kill()
+    #         coletavel.ativacao = False
+    #         print('pegou coletavel')
+
+    #         if coletavel.id == 1:
+    #             countdown_tiros = duracao_tiro * fps
+    #             tipo_tiro = "Bomb"
+    #             tiro_rodape = hitbox(40, y-40, 'Imagens/pubomba.png', id = 1)
+    #             grupo_rodape.add(tiro_rodape)
+
+    #         elif coletavel.id == 2:
+    #             countdown_escudo = duracao_escudo * fps
+    #             escudo.ativacao = True
+    #             escudo_rodape = hitbox(110, y-40, 'Imagens/puescudo.png', id = 2)
+    #             grupo_rodape.add(escudo_rodape)
+
+    #         elif coletavel.id == 3:
+    #             countdown_tiros = duracao_tiro * fps
+    #             tipo_tiro = "Triplo"
+    #             tiro_rodape = hitbox(40, y-40, 'Imagens/putiro3.png', id = 3)
+    #             grupo_rodape.add(tiro_rodape)
+
+    #         elif coletavel.id == 4:
+    #             countdown_tiros = duracao_tiro * fps
+    #             tipo_tiro = "Follower"
+    #             tiro_rodape = hitbox(40, y-40, 'Imagens/col_lil.png', id = 4)
+    #             grupo_rodape.add(tiro_rodape)
+
+    #         rodape = True
+
+    #         print('pegou coletavel', coletavel.id)
+
+    #     if coletavel.rect.top > y:
+    #         coletavel.kill()
+    #         coletavel.ativacao = False
+    #         coletavel.id = 0
+    #         print('perdeu coletavel')
+
+    # if countdown_tiros > 0:
+    #     if aviaozinho.rect.colliderect(coletavel.rect) and coletavel.id != 2:
+    #         duracao_tiro = 8
+
+    #     else:
+    #         countdown_tiros -= 1
+    #         print(countdown_tiros)
+    #         if countdown_tiros == 0:
+    #             tipo_tiro = "Default"
+    #             tiro_rodape.kill()
+    #             grupo_rodape.remove(tiro_rodape)
+    #             rodape = False
+    #             print(grupo_rodape)
+    #             print('tiro powerup acabou')
+
+    # if countdown_escudo > 0:
+    #     if aviaozinho.rect.colliderect(coletavel.rect) and coletavel.id == 2:
+    #         duracao_escudo = 8
+
+    #     else:
+    #         countdown_escudo -= 1
+    #         print(countdown_escudo)
+    #         if countdown_escudo == 0:
+    #             escudo.ativacao = False
+    #             escudo_rodape.kill()
+    #             grupo_rodape.remove(escudo_rodape)
+    #             rodape = False
+    #             print(grupo_rodape)
+    #             print('escudo acabou')
+    # gerenciador_coletaveis.update(aviaozinho)
 
     # Se a tecla para cima (↑) estiver pressionada e o avião não estiver fora da tela (com base na posição y do topo do hitbox)
     if tecla[pygame.K_UP] == True and aviaozinho.rect.top > 0:
@@ -202,28 +316,45 @@ while rodando:
 
     #### DEBUG ####
     # "a" para ativar o tiro triplo
-    if tecla[pygame.K_a] == True:
-        tipo_tiro = "Triplo"
+    # if tecla[pygame.K_a] == True:
+    #     tipo_tiro = "Triplo"
     # "w" para ativar o tiro default
-    elif tecla[pygame.K_w] == True:
-        tipo_tiro = "Default"
+    # elif tecla[pygame.K_w] == True:
+    #     tipo_tiro = "Default"
     # "s" para ativar o tipo de tiro "bomba"
-    elif tecla[pygame.K_s] == True:
-        tipo_tiro = "Bomb"
+    # elif tecla[pygame.K_s] == True:
+    #     tipo_tiro = "Bomb"
     # "a" para ativar o follower
-    elif tecla[pygame.K_d] == True:
-        tipo_tiro = "Follower"
+    # elif tecla[pygame.K_d] == True:
+    #     tipo_tiro = "Follower"
 
-    if tecla[pygame.K_1] == True:
-        escudo.ativacao = False
-    elif tecla[pygame.K_2] == True:
-        escudo.ativacao = True
+    # if tecla[pygame.K_1] == True:
+    #     escudo.ativacao = False
+    # elif tecla[pygame.K_2] == True:
+    #     escudo.ativacao = True
     ###############
 
     # Se nenhuma das teclas esquerda ou direita estiver pressionada, a imagem do avião volta para a posição inicial
     if tecla[pygame.K_LEFT] == False and tecla[pygame.K_RIGHT] == False:
         aviaozinho.image = pygame.image.load("Imagens/aviao_reto.png")
-    
+
+    coletavel_id = gerenciador_coletaveis.update(aviaozinho)
+
+    # Se o coletável for ativado, e o id do coletável for diferente de 0, faça a lógica de ativação do coletável
+    if coletavel_id != None:
+        if coletavel_id == constantes.TIRO_DEFAULT:
+            tipo_tiro = "Default"
+        elif coletavel_id == constantes.TIRO_BOMBA:
+            tipo_tiro = "Bomb"
+        elif coletavel_id == constantes.ESCUDO_ON:
+            escudo.ativacao = True
+        elif coletavel_id == constantes.ESCUDO_OFF:
+            escudo.ativacao = False
+        elif coletavel_id == constantes.TIRO_TRIPLO:
+            tipo_tiro = "Triplo"
+        elif coletavel_id == constantes.TIRO_LIL:
+            tipo_tiro = "Follower"
+
     # Invoca e focaliza o fundo no centro da tela, desenhando o plano de fundo
     tela.blit(fundo, (0, fundo_scroll))
 
@@ -306,11 +437,16 @@ while rodando:
     grupo_bomba.draw(tela)
     for linha in lista_tiro_triplo:
         linha.draw(tela)
+    if gerenciador_coletaveis.coletavel.ativacao == True:
+        gerenciador_coletaveis.grupo_coletavel.draw(tela)
+    if gerenciador_coletaveis.rodape == True:
+        gerenciador_coletaveis.grupo_rodape.draw(tela)
 
     # Atualiza a tela a cada iteração do loop
     pygame.display.update()
 
     # Aumente o cooldown em um 
     cooldown += 1
+
 # Fecha o pygame quando o loop terminar
 pygame.quit()
