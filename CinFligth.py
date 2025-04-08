@@ -11,7 +11,7 @@ import random
 def spawnar_inimigo():
     # Gera uma posição aleatória para o inimigo
     pos_x = random.randint(20, x - 50)  # Garante que o inimigo não saia da tela
-    pos_y = 50
+    pos_y = -20
 
     tipo_inimigo = random.randint(0, 1)  # Gera um número aleatório para escolher o tipo de inimigo (0 ou 1)
 
@@ -60,6 +60,17 @@ clock = pygame.time.Clock()
 fps = 30
 # define velociade do avião
 velocidade_aviao = 8
+
+#sistema de vida
+vida1 = hitbox(x - 50, y - 30, 'Imagens/life.png')
+vida1.ativacao = True
+vida2 = hitbox(x - 100, y - 30, 'Imagens/life.png')
+vida2.ativacao = True
+grupo_vida = pygame.sprite.Group()
+grupo_vida.add(vida2)
+grupo_vida.add(vida1)
+
+vida = 2
 
 # Criação do primeiro hitbox do player do jogo (o aviaozinho), e o coloca em um grupo de sprites (para ser renderizado dentro do loop do jogo)
 aviaozinho = hitbox(x / 2, y / 1.3, 'Imagens/avião_principal_neutro.png')
@@ -270,7 +281,7 @@ while rodando:
     if len(grupo_bomba) > 0:
         for bomba in grupo_bomba:
             if bomba.rect.y > bomba.posicao_spawn - 290 and bomba.rect.y > 0:
-                bomba.rect.y -= velocidade_aviao
+               bomba.rect.y -= velocidade_aviao
             else:
                 bomba.ativacao = True
                 tempx = bomba.rect.x
@@ -314,6 +325,7 @@ while rodando:
     colisoes_tiro_simples = pygame.sprite.groupcollide(grupo_tiro, grupo_inimigos, True, True)
     colisoes_tiro_triplo = pygame.sprite.groupcollide(grupo_tiro_triplo, grupo_inimigos, True, True)
     colisoes_bomba = pygame.sprite.groupcollide(grupo_bomba, grupo_inimigos, True, True)
+    colisoes_inimigo = pygame.sprite.groupcollide(grupo_inimigos, grupo_aviaozinho, False, True)
 
     # Combina todas as colisões em um único dicionário
     colisoes_combinadas = {}
@@ -331,12 +343,20 @@ while rodando:
     if tempo_spawn > fps * 2:
         spawnar_inimigo()
         tempo_spawn = 0
+
+    if vida <= 1:
+        for life in grupo_vida:
+            life.image = pygame.image.load("Imagens/nolife.png")
+            if vida == 1:
+                break
     
     # Atualiza os inimigos
     grupo_inimigos.update()
 
     # Renderiza os inimigos
     grupo_inimigos.draw(tela)
+
+    grupo_vida.draw(tela)
 
     # Atualiza a tela a cada iteração do loop
     pygame.display.update()
