@@ -101,6 +101,7 @@ grupo_lil_aviao = pygame.sprite.Group()  # Cria o grupo de sprites para os peque
 grupo_tiro = pygame.sprite.Group()  # Grupo de tiros (balas)
 lista_tiro_triplo = []  # Lista de tiros do tipo "triplo"
 grupo_bomba = pygame.sprite.Group()  # Grupo de bombas
+grupo_tiro_triplo = pygame.sprite.Group()  # Grupo de tiros do tipo "triplo"
 
 #Define o escudo, e o grupo do escudo.
 escudo = hitbox(aviaozinho.rect.center[0], aviaozinho.rect.center[1], 'Imagens/shield.png')
@@ -322,6 +323,7 @@ while rodando:
         tiros.add(tiro_middle)
         tiros.add(tiro_right)
         lista_tiro_triplo.append(tiros)  # Adiciona o grupo de tiros à lista de tiros triplos
+        grupo_tiro_triplo.add(tiros)  # Adiciona o grupo de tiros ao grupo de tiros triplos
 
         cooldown = 1  # Reseta o cooldown após atirar
     
@@ -459,6 +461,23 @@ while rodando:
         gerenciador_coletaveis.grupo_coletavel.draw(tela)
     if gerenciador_coletaveis.rodape == True:
         gerenciador_coletaveis.grupo_rodape.draw(tela)
+
+    # Verifica colisões entre tiros e inimigos para cada tipo de tiro
+    colisoes_tiro_simples = pygame.sprite.groupcollide(grupo_tiro, grupo_inimigos, True, True)
+    colisoes_tiro_triplo = pygame.sprite.groupcollide(grupo_tiro_triplo, grupo_inimigos, True, True)
+    colisoes_bomba = pygame.sprite.groupcollide(grupo_bomba, grupo_inimigos, True, True)
+
+    # Combina todas as colisões em um único dicionário
+    colisoes_combinadas = {}
+    colisoes_combinadas.update(colisoes_tiro_simples)
+    colisoes_combinadas.update(colisoes_tiro_triplo)
+    colisoes_combinadas.update(colisoes_bomba)
+
+    # Atualiza o score com base nas colisões combinadas
+    for tiro, inimigos in colisoes_combinadas.items():
+        for inimigo in inimigos:
+            score += 10  # Adiciona 10 pontos ao score
+            print("Inimigo destruído!")
 
     # Spawna um inimigo a cada 2 segundos (ajuste conforme necessário)
     if tempo_spawn > fps * 2:
