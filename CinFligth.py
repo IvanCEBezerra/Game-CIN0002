@@ -1,6 +1,8 @@
 # CInFlight
 import pygame
 
+from menu import Menu
+
 # Define uma nova classe hitbox com as mesmas propriedades da classe Sprite do pygame
 class hitbox (pygame.sprite.Sprite):
     # Inicializa (automaticamente) as características atribuídas ao objeto (definidas abaixo)
@@ -38,6 +40,9 @@ class hitbox (pygame.sprite.Sprite):
 # Inicializa o pygame
 pygame.init()
 
+# Tudo abaixo disso é o jogo em si
+
+
 # Define o valor do score e a fonte de texto do score (seu tipo e seu tamanho)
 fonte_score = pygame.font.SysFont("comicsanss", 40)
 score = 0
@@ -48,6 +53,12 @@ y = 720   # Altura da tela
 
 # Definição das proporções da tela (janela onde vai ocorrer o jogo)
 tela = pygame.display.set_mode((x, y))
+
+menu = Menu(tela)
+opcao = menu.rodar()
+if opcao != "jogar":
+    pygame.quit()
+    exit()
 
 # Define o background do jogo, utilizando uma imagem externa
 fundo = pygame.image.load("Imagens/background.png")
