@@ -4,13 +4,15 @@ import pygame
 import constantes
 from Hitabox import hitbox as hitbox
 from GerenciadorColecionaveis import GerenciadorColecionaveis as gc
+=======
+from menu import Menu
 
-# # Define uma nova classe hitbox com as mesmas propriedades da classe Sprite do pygame
-# class hitbox (pygame.sprite.Sprite):
-#     # Inicializa (automaticamente) as características atribuídas ao objeto (definidas abaixo)
-#     def __init__(self, x, y, diretorio, id = None):
-#         # Chama o construtor da classe base Sprite para inicializar as propriedades padrão de um sprite
-#         pygame.sprite.Sprite.__init__(self)
+# Define uma nova classe hitbox com as mesmas propriedades da classe Sprite do pygame
+class hitbox (pygame.sprite.Sprite):
+    # Inicializa (automaticamente) as características atribuídas ao objeto (definidas abaixo)
+    def __init__(self, x, y, diretorio):
+        # Chama o construtor da classe base Sprite para inicializar as propriedades padrão de um sprite
+        pygame.sprite.Sprite.__init__(self)
 
 #         # O hitbox terá sua imagem baseada em um arquivo de imagem, que será direcionado através de um caminho(pathway) do diretório
 #         self.image = pygame.image.load(diretorio)
@@ -43,6 +45,9 @@ from GerenciadorColecionaveis import GerenciadorColecionaveis as gc
 # Inicializa o pygame
 pygame.init()
 
+# Tudo abaixo disso é o jogo em si
+
+
 # Define o valor do score e a fonte de texto do score (seu tipo e seu tamanho)
 fonte_score = pygame.font.SysFont("comicsanss", 40)
 score = 0
@@ -53,6 +58,12 @@ y = 720   # Altura da tela
 
 # Definição das proporções da tela (janela onde vai ocorrer o jogo)
 tela = pygame.display.set_mode((x, y))
+
+menu = Menu(tela)
+opcao = menu.rodar()
+if opcao != "jogar":
+    pygame.quit()
+    exit()
 
 # Define o background do jogo, utilizando uma imagem externa
 fundo = pygame.image.load("Imagens/background.png")
