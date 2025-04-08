@@ -31,7 +31,7 @@ class GerenciadorColecionaveis:
               self.coletavel.kill()
 
               #gerar aleatóriamente qual será o coletável
-              col_aleatorio = random.randint(1, 4)
+              col_aleatorio = random.randint(1, 5)
               #gerar uma posição aleatória para o coletável aparecer na tela
               pos_x_aleatorio = random.randint(20, 1250)
 
@@ -42,7 +42,7 @@ class GerenciadorColecionaveis:
               elif col_aleatorio == constantes.TIRO_TRIPLO:
                   self.coletavel = hitbox(pos_x_aleatorio, 0, 'Imagens/putiro3.png', id = constantes.TIRO_TRIPLO)
               elif col_aleatorio == constantes.TIRO_LIL:
-                  self.coletavel = hitbox(pos_x_aleatorio, 0, 'Imagens/col_lil.png', id = constantes.TIRO_LIL)
+                  self.coletavel = hitbox(pos_x_aleatorio, 0, 'Imagens/aviao_suporte.png', id = constantes.TIRO_LIL)
 
               self.grupo_coletavel.add(self.coletavel)  # Adiciona o coletável ao grupo de coletáveis
               self.coletavel.ativacao = True
@@ -81,7 +81,7 @@ class GerenciadorColecionaveis:
                   self.countdown_tiros = constantes.DURACAO_TIRO * constantes.FPS
                   # tipo_tiro = "Follower"
                   col_id = constantes.TIRO_LIL
-                  self.tiro_rodape = hitbox(40, constantes.Y-40, 'Imagens/col_lil.png', id = constantes.TIRO_LIL)
+                  self.tiro_rodape = hitbox(40, constantes.Y-40, 'Imagens/aviao_suporte.png', id = constantes.TIRO_LIL)
                   self.grupo_rodape_tiro.add(self.tiro_rodape)
 
               self.rodape = True

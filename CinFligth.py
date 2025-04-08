@@ -4,49 +4,10 @@ import pygame
 import constantes
 from Hitabox import hitbox as hitbox
 from GerenciadorColecionaveis import GerenciadorColecionaveis as gc
-
 from menu import Menu
-
-# Define uma nova classe hitbox com as mesmas propriedades da classe Sprite do pygame
-# class hitbox (pygame.sprite.Sprite):
-    # Inicializa (automaticamente) as características atribuídas ao objeto (definidas abaixo)
-#    def __init__(self, x, y, diretorio):
-        # Chama o construtor da classe base Sprite para inicializar as propriedades padrão de um sprite
-#        pygame.sprite.Sprite.__init__(self)
-
-#         # O hitbox terá sua imagem baseada em um arquivo de imagem, que será direcionado através de um caminho(pathway) do diretório
-#         self.image = pygame.image.load(diretorio)
-
-#         # O retângulo que definirá o hitbox em si terá suas proporções baseadas na imagem recebida
-#         self.rect = self.image.get_rect()
-
-#         # A posição do hitbox na tela será dada por um x e um y
-#         self.rect.center = [x, y]
-
-#         # Define se está ativado ou não (caso o hitbox seja de uma bomba, ou outra coisa que precisa ser ativada)
-#         self.ativacao = None
-
-#         # Define a posição de spawn do hitbox (útil para balas)
-#         self.posicao_spawn = None
-
-#         # Define o contador do tempo de existência do hitbox, caso ele seja feito para desaparecer depois de um tempo
-#         self.tempo_existencia = 0
-
-#         self.id = id  # Define o id do hitbox (útil para identificar qual é o hitbox, caso tenha mais de um na tela)
-
-#     # Move horizontalmente a posição do hitbox na tela, em uma quantidade de pixels predefinida
-#     def mover_horizontal(self, qtd_pixels):
-#         self.rect.x += qtd_pixels
-    
-#     # Move verticalmente a posição do hitbox na tela, em uma quantidade de pixels predefinida
-#     def mover_vertical(self, qtd_pixels):
-#         self.rect.y += qtd_pixels
 
 # Inicializa o pygame
 pygame.init()
-
-# Tudo abaixo disso é o jogo em si
-
 
 # Define o valor do score e a fonte de texto do score (seu tipo e seu tamanho)
 fonte_score = pygame.font.SysFont("comicsanss", 40)
@@ -57,7 +18,7 @@ x = 1280  # Largura da tela
 y = 720   # Altura da tela
 
 # Definição das proporções da tela (janela onde vai ocorrer o jogo)
-tela = pygame.display.set_mode((x, y))
+tela = pygame.display.set_mode((x, y), pygame.FULLSCREEN)
 
 menu = Menu(tela)
 opcao = menu.rodar()
@@ -79,9 +40,11 @@ clock = pygame.time.Clock()
 
 # Define a taxa máxima de quadros por segundo
 fps = 30
+# define velociade do avião
+velocidade_aviao = 8
 
 # Criação do primeiro hitbox do player do jogo (o aviaozinho), e o coloca em um grupo de sprites (para ser renderizado dentro do loop do jogo)
-aviaozinho = hitbox(x / 2, y / 1.3, 'Imagens/aviao_reto.png')
+aviaozinho = hitbox(x / 2, y / 1.3, 'Imagens/avião_principal_neutro.png')
 aviaozinho.ativacao = False  # Define se o aviaozinho está ativado
 grupo_aviaozinho = pygame.sprite.Group()  # Cria o grupo de sprites para o aviaozinho
 grupo_aviaozinho.add(aviaozinho)
@@ -104,17 +67,6 @@ tipo_tiro = "Default"
 # Cooldown do tiro (intervalo entre os tiros)
 cooldown = fps/3
 
-# intervalo_coletaveis = 5 # intervalo de exibição dos coletaveis
-# coletavel = hitbox(x/2, y/3, 'Imagens/col_bomba.png')
-# grupo_coletavel = pygame.sprite.Group()
-# grupo_rodape = pygame.sprite.Group()
-# grupo_coletavel.add(coletavel)  # Adiciona o coletável ao grupo de coletáveis
-# coletavel.ativacao = False
-# rodape = False
-# duracao_tiro = 8 # Duração dos tiros em segundos
-# duracao_escudo = 8 #duraçao do escudo em segundos
-# countdown_tiros = 0 # Contador do tempo de duração dos tiros e do lil aviao
-# countdown_escudo = 0 #contador do tempo de duração do escudo
 gerenciador_coletaveis = gc(escudo)
 
 # Variável que verifica se o jogo está aberto
@@ -134,123 +86,27 @@ while rodando:
     # Verifica as teclas pressionadas
     tecla = pygame.key.get_pressed()
 
-    # if not coletavel.ativacao:
-    #     #fazer os coletáveis aparecerem aproximadamente de 10 em 10 segundos
-    #     if random.randint(0, fps * intervalo_coletaveis) == 0:
-    #         coletavel.kill()
-
-    #         #gerar aleatóriamente qual será o coletável
-    #         col_aleatorio = random.randint(0, 3)
-    #         #gerar uma posição aleatória para o coletável aparecer na tela
-    #         pos_x_aleatorio = random.randint(x*0.1, x*0.9)
-
-    #         if col_aleatorio == 0:
-    #             coletavel = hitbox(pos_x_aleatorio, 0, 'Imagens/pubomba.png', id = 1)
-    #         elif col_aleatorio == 1:
-    #             coletavel = hitbox(pos_x_aleatorio, 0, 'Imagens/puescudo.png', id = 2)
-    #         elif col_aleatorio == 2:
-    #             coletavel = hitbox(pos_x_aleatorio, 0, 'Imagens/putiro3.png', id = 3)
-    #         else:
-    #             coletavel = hitbox(pos_x_aleatorio, 0, 'Imagens/col_lil.png', id = 4)
-
-    #         grupo_coletavel.add(coletavel)  # Adiciona o coletável ao grupo de coletáveis
-    #         coletavel.ativacao = True
-    #         print('coletavel entrou na tela')
-
-    # if coletavel.ativacao:
-    #     coletavel.mover_vertical(6)
-
-    #     if aviaozinho.rect.colliderect(coletavel.rect):
-    #         coletavel.kill()
-    #         coletavel.ativacao = False
-    #         print('pegou coletavel')
-
-    #         if coletavel.id == 1:
-    #             countdown_tiros = duracao_tiro * fps
-    #             tipo_tiro = "Bomb"
-    #             tiro_rodape = hitbox(40, y-40, 'Imagens/pubomba.png', id = 1)
-    #             grupo_rodape.add(tiro_rodape)
-
-    #         elif coletavel.id == 2:
-    #             countdown_escudo = duracao_escudo * fps
-    #             escudo.ativacao = True
-    #             escudo_rodape = hitbox(110, y-40, 'Imagens/puescudo.png', id = 2)
-    #             grupo_rodape.add(escudo_rodape)
-
-    #         elif coletavel.id == 3:
-    #             countdown_tiros = duracao_tiro * fps
-    #             tipo_tiro = "Triplo"
-    #             tiro_rodape = hitbox(40, y-40, 'Imagens/putiro3.png', id = 3)
-    #             grupo_rodape.add(tiro_rodape)
-
-    #         elif coletavel.id == 4:
-    #             countdown_tiros = duracao_tiro * fps
-    #             tipo_tiro = "Follower"
-    #             tiro_rodape = hitbox(40, y-40, 'Imagens/col_lil.png', id = 4)
-    #             grupo_rodape.add(tiro_rodape)
-
-    #         rodape = True
-
-    #         print('pegou coletavel', coletavel.id)
-
-    #     if coletavel.rect.top > y:
-    #         coletavel.kill()
-    #         coletavel.ativacao = False
-    #         coletavel.id = 0
-    #         print('perdeu coletavel')
-
-    # if countdown_tiros > 0:
-    #     if aviaozinho.rect.colliderect(coletavel.rect) and coletavel.id != 2:
-    #         duracao_tiro = 8
-
-    #     else:
-    #         countdown_tiros -= 1
-    #         print(countdown_tiros)
-    #         if countdown_tiros == 0:
-    #             tipo_tiro = "Default"
-    #             tiro_rodape.kill()
-    #             grupo_rodape.remove(tiro_rodape)
-    #             rodape = False
-    #             print(grupo_rodape)
-    #             print('tiro powerup acabou')
-
-    # if countdown_escudo > 0:
-    #     if aviaozinho.rect.colliderect(coletavel.rect) and coletavel.id == 2:
-    #         duracao_escudo = 8
-
-    #     else:
-    #         countdown_escudo -= 1
-    #         print(countdown_escudo)
-    #         if countdown_escudo == 0:
-    #             escudo.ativacao = False
-    #             escudo_rodape.kill()
-    #             grupo_rodape.remove(escudo_rodape)
-    #             rodape = False
-    #             print(grupo_rodape)
-    #             print('escudo acabou')
-    # gerenciador_coletaveis.update(aviaozinho)
-
     # Se a tecla para cima (↑) estiver pressionada e o avião não estiver fora da tela (com base na posição y do topo do hitbox)
-    if tecla[pygame.K_UP] == True and aviaozinho.rect.top > 0:
-        aviaozinho.mover_vertical(-8)
+    if (tecla[pygame.K_UP] == True or tecla[pygame.K_w] == True) and aviaozinho.rect.top > 0:
+        aviaozinho.mover_vertical(-velocidade_aviao)
     
     # Se a tecla para baixo (↓) estiver pressionada e o avião não estiver fora da tela (com base na posição y do fundo do hitbox)
-    if tecla[pygame.K_DOWN] == True and aviaozinho.rect.bottom < y:
-        aviaozinho.mover_vertical(8)
+    if (tecla[pygame.K_DOWN] == True or tecla[pygame.K_s] == True) and aviaozinho.rect.bottom < y:
+        aviaozinho.mover_vertical(velocidade_aviao)
     
     # Se a tecla para direita (→) estiver pressionada e o avião não ultrapassar o limite da tela (com base na posição x da parte direita do hitbox)
-    if tecla[pygame.K_RIGHT] == True and aviaozinho.rect.right < x:
-        aviaozinho.mover_horizontal(8)
+    if (tecla[pygame.K_RIGHT] == True or tecla[pygame.K_d] == True) and aviaozinho.rect.right < x:
+        aviaozinho.mover_horizontal(velocidade_aviao)
 
         # Altera a imagem para a direita
-        aviaozinho.image = pygame.image.load("Imagens/aviao_direita.png")  
+        aviaozinho.image = pygame.image.load("Imagens/aviao_principal_direita.png")  
     
     # Se a tecla para esquerda (←) estiver pressionada e o avião não ultrapassar o limite da tela (com base na posição x da parte esquerda do hitbox)
-    if tecla[pygame.K_LEFT] == True and aviaozinho.rect.left > 0:
-        aviaozinho.mover_horizontal(-8)
+    if (tecla[pygame.K_LEFT] == True or tecla[pygame.K_a] == True) and aviaozinho.rect.left > 0:
+        aviaozinho.mover_horizontal(-velocidade_aviao)
 
         # Altera a imagem para a esquerda
-        aviaozinho.image = pygame.image.load("Imagens/aviao_esquerda.png")
+        aviaozinho.image = pygame.image.load("Imagens/aviao_principal_esquerda.png")
 
     # Se o escudo estiver ativado ou estiver nulo, atualize a posição dele
     if escudo.ativacao == True or escudo.ativacao == None:
@@ -269,16 +125,16 @@ while rodando:
     elif aviaozinho.ativacao == True:
         # Mover o pequeno avião em direção ao aviaozinho
         if lil_aviao.rect.left <= aviaozinho.rect.left - 48:
-            lil_aviao.mover_horizontal(8)
+            lil_aviao.mover_horizontal(velocidade_aviao)
         if lil_aviao.rect.right >= aviaozinho.rect.right + 48:
-            lil_aviao.mover_horizontal(-8)
+            lil_aviao.mover_horizontal(-velocidade_aviao)
         if lil_aviao.rect.top <= aviaozinho.rect.top - 48:
-            lil_aviao.mover_vertical(8)
+            lil_aviao.mover_vertical(velocidade_aviao)
         if lil_aviao.rect.bottom >= aviaozinho.rect.bottom + 48:
-            lil_aviao.mover_vertical(-8)
+            lil_aviao.mover_vertical(-velocidade_aviao)
     elif tipo_tiro == "Follower" and aviaozinho.ativacao == False:
         aviaozinho.ativacao = True  # Ativa o aviaozinho
-        lil_aviao = hitbox(aviaozinho.rect.left + 44, aviaozinho.rect.bottom + 25,"Imagens/lil_aviao.png" )
+        lil_aviao = hitbox(aviaozinho.rect.left + 44, aviaozinho.rect.bottom + 25,"Imagens/av_suporte_neutro.png" )
         grupo_lil_aviao.add(lil_aviao)  # Adiciona o pequeno avião ao grupo
 
     # Se a tecla espaço estiver pressionada, o cooldown for um terço do valor do fps, e o tipo de tiro for default, crie a hitbox de um tiro e o coloque no grupo de tiros, e resete o cooldown
@@ -314,29 +170,9 @@ while rodando:
         grupo_bomba.add(bomb)  # Adiciona a bomba ao grupo de bombas
         cooldown = 1  # Reseta o cooldown após lançar a bomba
 
-    #### DEBUG ####
-    # "a" para ativar o tiro triplo
-    # if tecla[pygame.K_a] == True:
-    #     tipo_tiro = "Triplo"
-    # "w" para ativar o tiro default
-    # elif tecla[pygame.K_w] == True:
-    #     tipo_tiro = "Default"
-    # "s" para ativar o tipo de tiro "bomba"
-    # elif tecla[pygame.K_s] == True:
-    #     tipo_tiro = "Bomb"
-    # "a" para ativar o follower
-    # elif tecla[pygame.K_d] == True:
-    #     tipo_tiro = "Follower"
-
-    # if tecla[pygame.K_1] == True:
-    #     escudo.ativacao = False
-    # elif tecla[pygame.K_2] == True:
-    #     escudo.ativacao = True
-    ###############
-
     # Se nenhuma das teclas esquerda ou direita estiver pressionada, a imagem do avião volta para a posição inicial
-    if tecla[pygame.K_LEFT] == False and tecla[pygame.K_RIGHT] == False:
-        aviaozinho.image = pygame.image.load("Imagens/aviao_reto.png")
+    if (tecla[pygame.K_LEFT] == False and tecla[pygame.K_a] == False) and (tecla[pygame.K_RIGHT] == False and tecla[pygame.K_d] == False):
+        aviaozinho.image = pygame.image.load("Imagens/avião_principal_neutro.png")
 
     coletavel_id = gerenciador_coletaveis.update(aviaozinho)
 
@@ -369,7 +205,7 @@ while rodando:
     if len(grupo_tiro) > 0:
         for bala in grupo_tiro:
             if bala.rect.y > 0:
-                bala.rect.y -= 8
+                bala.rect.y -= 25
             else:
                 bala.kill()
 
@@ -383,12 +219,12 @@ while rodando:
                         bala.rect.y -= 4 * 1.414
                         bala.rect.x -= 4 * 1.414
                     elif bala.rect.y > 0:
-                        bala.rect.y -= 8
+                        bala.rect.y -= 20
                     else:
                         bala.kill()
                 elif i == 1:
                     if bala.rect.y > 0:
-                        bala.rect.y -= 8
+                        bala.rect.y -= 20
                     else:
                         bala.kill()
                 elif i == 2:
@@ -396,7 +232,7 @@ while rodando:
                         bala.rect.y -= 4 * 1.414
                         bala.rect.x += 4 * 1.414
                     elif bala.rect.y > 0:
-                        bala.rect.y -= 8
+                        bala.rect.y -= 20
 
                     else:
                         bala.kill()
@@ -405,7 +241,7 @@ while rodando:
     if len(grupo_bomba) > 0:
         for bomba in grupo_bomba:
             if bomba.rect.y > bomba.posicao_spawn - 290 and bomba.rect.y > 0:
-                bomba.rect.y -= 4
+                bomba.rect.y -= velocidade_aviao
             else:
                 bomba.ativacao = True
                 tempx = bomba.rect.x
