@@ -5,6 +5,24 @@ import constantes
 from Hitabox import hitbox as hitbox
 from GerenciadorColecionaveis import GerenciadorColecionaveis as gc
 from menu import Menu
+from inimigos import inimigo_horizontal, kamikaze
+import random
+
+def spawnar_inimigo():
+    # Gera uma posição aleatória para o inimigo
+    pos_x = random.randint(20, x - 50)  # Garante que o inimigo não saia da tela
+    pos_y = 50
+
+    tipo_inimigo = random.randint(0, 1)  # Gera um número aleatório para escolher o tipo de inimigo (0 ou 1)
+
+    # Cria uma nova instância do inimigo
+    if tipo_inimigo == 0:
+        inimigo = inimigo_horizontal(pos_x, pos_y, 'Imagens/aviao_reto.png')
+    elif tipo_inimigo == 1:
+        inimigo = kamikaze(pos_x, pos_y, 'Imagens/aviao_reto.png')
+
+    # Adiciona o inimigo ao grupo de inimigos
+    grupo_inimigos.add(inimigo)
 
 # Inicializa o pygame
 pygame.init()
@@ -55,6 +73,7 @@ grupo_lil_aviao = pygame.sprite.Group()  # Cria o grupo de sprites para os peque
 grupo_tiro = pygame.sprite.Group()  # Grupo de tiros (balas)
 lista_tiro_triplo = []  # Lista de tiros do tipo "triplo"
 grupo_bomba = pygame.sprite.Group()  # Grupo de bombas
+grupo_tiro_triplo = pygame.sprite.Group()  # Grupo de tiros do tipo "triplo"
 
 #Define o escudo, e o grupo do escudo.
 escudo = hitbox(aviaozinho.rect.center[0], aviaozinho.rect.center[1], 'Imagens/shield.png')
@@ -69,6 +88,12 @@ cooldown = fps/3
 
 gerenciador_coletaveis = gc(escudo)
 
+# Grupo de sprites para os inimigos
+grupo_inimigos = pygame.sprite.Group()
+
+# Variável para controlar o tempo de spawn dos inimigos
+tempo_spawn = 0
+
 # Variável que verifica se o jogo está aberto
 rodando = True
 
@@ -76,6 +101,9 @@ rodando = True
 while rodando:
     # Limita o número de quadros que o jogo pode renderizar por segundo, garantindo que o FPS não ultrapasse o valor definido
     clock.tick(fps)
+    
+    # Incrementa o contador de tempo
+    tempo_spawn += 1
 
     # Processa os eventos do jogo
     for evento in pygame.event.get():
@@ -160,6 +188,7 @@ while rodando:
         tiros.add(tiro_middle)
         tiros.add(tiro_right)
         lista_tiro_triplo.append(tiros)  # Adiciona o grupo de tiros à lista de tiros triplos
+        grupo_tiro_triplo.add(tiros)  # Adiciona o grupo de tiros ao grupo de tiros triplos
 
         cooldown = 1  # Reseta o cooldown após atirar
     
@@ -280,6 +309,34 @@ while rodando:
         gerenciador_coletaveis.grupo_rodape_tiro.draw(tela)
     if len(gerenciador_coletaveis.grupo_rodape_escudo) > 0:
         gerenciador_coletaveis.grupo_rodape_escudo.draw(tela)
+
+    # Verifica colisões entre tiros e inimigos para cada tipo de tiro
+    colisoes_tiro_simples = pygame.sprite.groupcollide(grupo_tiro, grupo_inimigos, True, True)
+    colisoes_tiro_triplo = pygame.sprite.groupcollide(grupo_tiro_triplo, grupo_inimigos, True, True)
+    colisoes_bomba = pygame.sprite.groupcollide(grupo_bomba, grupo_inimigos, True, True)
+
+    # Combina todas as colisões em um único dicionário
+    colisoes_combinadas = {}
+    colisoes_combinadas.update(colisoes_tiro_simples)
+    colisoes_combinadas.update(colisoes_tiro_triplo)
+    colisoes_combinadas.update(colisoes_bomba)
+
+    # Atualiza o score com base nas colisões combinadas
+    for tiro, inimigos in colisoes_combinadas.items():
+        for inimigo in inimigos:
+            score += 10  # Adiciona 10 pontos ao score
+            print("Inimigo destruído!")
+
+    # Spawna um inimigo a cada 2 segundos (ajuste conforme necessário)
+    if tempo_spawn > fps * 2:
+        spawnar_inimigo()
+        tempo_spawn = 0
+    
+    # Atualiza os inimigos
+    grupo_inimigos.update()
+
+    # Renderiza os inimigos
+    grupo_inimigos.draw(tela)
 
     # Atualiza a tela a cada iteração do loop
     pygame.display.update()
