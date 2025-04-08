@@ -4,15 +4,15 @@ import pygame
 import constantes
 from Hitabox import hitbox as hitbox
 from GerenciadorColecionaveis import GerenciadorColecionaveis as gc
-=======
+
 from menu import Menu
 
 # Define uma nova classe hitbox com as mesmas propriedades da classe Sprite do pygame
-class hitbox (pygame.sprite.Sprite):
+# class hitbox (pygame.sprite.Sprite):
     # Inicializa (automaticamente) as características atribuídas ao objeto (definidas abaixo)
-    def __init__(self, x, y, diretorio):
+#    def __init__(self, x, y, diretorio):
         # Chama o construtor da classe base Sprite para inicializar as propriedades padrão de um sprite
-        pygame.sprite.Sprite.__init__(self)
+#        pygame.sprite.Sprite.__init__(self)
 
 #         # O hitbox terá sua imagem baseada em um arquivo de imagem, que será direcionado através de um caminho(pathway) do diretório
 #         self.image = pygame.image.load(diretorio)
@@ -439,8 +439,11 @@ while rodando:
         linha.draw(tela)
     if gerenciador_coletaveis.coletavel.ativacao == True:
         gerenciador_coletaveis.grupo_coletavel.draw(tela)
-    if gerenciador_coletaveis.rodape == True:
-        gerenciador_coletaveis.grupo_rodape.draw(tela)
+    #if gerenciador_coletaveis.rodape == True:
+    if len(gerenciador_coletaveis.grupo_rodape_tiro) > 0:
+        gerenciador_coletaveis.grupo_rodape_tiro.draw(tela)
+    if len(gerenciador_coletaveis.grupo_rodape_escudo) > 0:
+        gerenciador_coletaveis.grupo_rodape_escudo.draw(tela)
 
     # Atualiza a tela a cada iteração do loop
     pygame.display.update()
