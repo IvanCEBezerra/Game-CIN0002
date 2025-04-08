@@ -1,18 +1,22 @@
-
 # CInFlight
 import pygame
 import constantes
 from Hitabox import hitbox as hitbox
 from GerenciadorColecionaveis import GerenciadorColecionaveis as gc
-=======
 from menu import Menu
+from inimigos import inimigo_horizontal
+import random
 
-# Define uma nova classe hitbox com as mesmas propriedades da classe Sprite do pygame
-class hitbox (pygame.sprite.Sprite):
-    # Inicializa (automaticamente) as características atribuídas ao objeto (definidas abaixo)
-    def __init__(self, x, y, diretorio):
-        # Chama o construtor da classe base Sprite para inicializar as propriedades padrão de um sprite
-        pygame.sprite.Sprite.__init__(self)
+def spawnar_inimigo():
+    # Gera uma posição aleatória para o inimigo
+    pos_x = random.randint(20, x - 50)  # Garante que o inimigo não saia da tela
+    pos_y = 50
+
+    # Cria uma nova instância do inimigo
+    inimigo = inimigo_horizontal(pos_x, pos_y, 'Imagens/aviao_reto.png')
+
+    # Adiciona o inimigo ao grupo de inimigos
+    grupo_inimigos.add(inimigo)
 
 #         # O hitbox terá sua imagem baseada em um arquivo de imagem, que será direcionado através de um caminho(pathway) do diretório
 #         self.image = pygame.image.load(diretorio)
@@ -117,6 +121,12 @@ cooldown = fps/3
 # countdown_escudo = 0 #contador do tempo de duração do escudo
 gerenciador_coletaveis = gc(escudo)
 
+# Grupo de sprites para os inimigos
+grupo_inimigos = pygame.sprite.Group()
+
+# Variável para controlar o tempo de spawn dos inimigos
+tempo_spawn = 0
+
 # Variável que verifica se o jogo está aberto
 rodando = True
 
@@ -124,6 +134,9 @@ rodando = True
 while rodando:
     # Limita o número de quadros que o jogo pode renderizar por segundo, garantindo que o FPS não ultrapasse o valor definido
     clock.tick(fps)
+
+    # Incrementa o contador de tempo
+    tempo_spawn += 1
 
     # Processa os eventos do jogo
     for evento in pygame.event.get():
@@ -441,6 +454,17 @@ while rodando:
         gerenciador_coletaveis.grupo_coletavel.draw(tela)
     if gerenciador_coletaveis.rodape == True:
         gerenciador_coletaveis.grupo_rodape.draw(tela)
+
+    # Spawna um inimigo a cada 2 segundos (ajuste conforme necessário)
+    if tempo_spawn > fps * 2:
+        spawnar_inimigo()
+        tempo_spawn = 0
+    
+    # Atualiza os inimigos
+    grupo_inimigos.update()
+
+    # Renderiza os inimigos
+    grupo_inimigos.draw(tela)
 
     # Atualiza a tela a cada iteração do loop
     pygame.display.update()

@@ -32,7 +32,7 @@ class GerenciadorColecionaveis:
               #gerar aleatóriamente qual será o coletável
               col_aleatorio = random.randint(1, 4)
               #gerar uma posição aleatória para o coletável aparecer na tela
-              pos_x_aleatorio = random.randint(constantes.X*0.1, constantes.X*0.9)
+              pos_x_aleatorio = random.randint(int(constantes.X*0.1), int(constantes.X*0.9))
 
               if col_aleatorio == constantes.TIRO_BOMBA:
                   self.coletavel = hitbox(pos_x_aleatorio, 0, 'Imagens/pubomba.png', id = constantes.TIRO_BOMBA)
