@@ -161,7 +161,7 @@ while rodando:
         pygame.mixer.music.set_volume(0.5)
         pygame.mixer.music.play(-1)
         # Carrega a imagem de "Game Over"
-        fundo = pygame.image.load("Imagens/gameover.png")
+        fundo = pygame.image.load("Imagens/IMG-G_O.png")
         tela.blit(fundo, (0, 0))  # Desenha a imagem na tela
         pygame.display.update()
 
