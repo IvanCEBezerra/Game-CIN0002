@@ -5,7 +5,7 @@ from Hitabox import hitbox as hitbox
 
 class GerenciadorColecionaveis:
   def __init__(self, escudo):
-    self.coletavel = hitbox(constantes.X/2, constantes.Y/3, 'Imagens/col_bomba.png')
+    self.coletavel = hitbox(constantes.X/2, constantes.Y/3, 'Imagens/coletáveis/pubomba.png')
     self.grupo_coletavel = pygame.sprite.Group()
     self.grupo_rodape_tiro = pygame.sprite.Group()
     self.grupo_rodape_escudo = pygame.sprite.Group()
@@ -15,9 +15,9 @@ class GerenciadorColecionaveis:
     self.rodape = False
     self.countdown_tiros = 0
     self.countdown_escudo = 0
-    self.tiro_rodape = hitbox(40, constantes.Y-40, 'Imagens/pubomba.png', id = constantes.TIRO_BOMBA)
+    self.tiro_rodape = hitbox(40, constantes.Y-40, 'Imagens/coletáveis/pubomba.png', id = constantes.TIRO_BOMBA)
     self.tiro_rodape.ativacao = False
-    self.escudo_rodape = hitbox(110, constantes.Y-40, 'Imagens/puescudo.png', id = constantes.ESCUDO_ON)
+    self.escudo_rodape = hitbox(110, constantes.Y-40, 'Imagens/coletáveis/puescudo.png', id = constantes.ESCUDO_ON)
     self.escudo_rodape.ativacao = False
     #print(100000000, constantes.FPS * constantes.INTERVALO_COLETAVEIS)
 
@@ -36,13 +36,13 @@ class GerenciadorColecionaveis:
               pos_x_aleatorio = random.randint(20, 1250)
 
               if col_aleatorio == constantes.TIRO_BOMBA:
-                  self.coletavel = hitbox(pos_x_aleatorio, 0, 'Imagens/pubomba.png', id = constantes.TIRO_BOMBA)
+                  self.coletavel = hitbox(pos_x_aleatorio, 0, 'Imagens/coletáveis/pubomba.png', id = constantes.TIRO_BOMBA)
               elif col_aleatorio == constantes.ESCUDO_ON:
-                  self.coletavel = hitbox(pos_x_aleatorio, 0, 'Imagens/puescudo.png', id = constantes.ESCUDO_ON)
+                  self.coletavel = hitbox(pos_x_aleatorio, 0, 'Imagens/coletáveis/puescudo.png', id = constantes.ESCUDO_ON)
               elif col_aleatorio == constantes.TIRO_TRIPLO:
-                  self.coletavel = hitbox(pos_x_aleatorio, 0, 'Imagens/putiro3.png', id = constantes.TIRO_TRIPLO)
+                  self.coletavel = hitbox(pos_x_aleatorio, 0, 'Imagens/coletáveis/putiro3.png', id = constantes.TIRO_TRIPLO)
               elif col_aleatorio == constantes.TIRO_LIL:
-                  self.coletavel = hitbox(pos_x_aleatorio, 0, 'Imagens/aviao_suporte.png', id = constantes.TIRO_LIL)
+                  self.coletavel = hitbox(pos_x_aleatorio, 0, 'Imagens/coletáveis/aviao_suporte.png', id = constantes.TIRO_LIL)
 
               self.grupo_coletavel.add(self.coletavel)  # Adiciona o coletável ao grupo de coletáveis
               self.coletavel.ativacao = True
@@ -60,28 +60,28 @@ class GerenciadorColecionaveis:
                   self.countdown_tiros = constantes.DURACAO_TIRO * constantes.FPS
                   # tipo_tiro = "Bomb"
                   col_id = constantes.TIRO_BOMBA
-                  self.tiro_rodape = hitbox(40, constantes.Y-40, 'Imagens/pubomba.png', id = constantes.TIRO_BOMBA)
+                  self.tiro_rodape = hitbox(40, constantes.Y-40, 'Imagens/coletáveis/pubomba.png', id = constantes.TIRO_BOMBA)
                   self.grupo_rodape_tiro.add(self.tiro_rodape)
 
               elif self.coletavel.id == constantes.ESCUDO_ON:
                   self.countdown_escudo = constantes.DURACAO_ESCUDO * constantes.FPS
                   # self.escudo.ativacao = True
                   col_id = constantes.ESCUDO_ON
-                  self.escudo_rodape = hitbox(110, constantes.Y-40, 'Imagens/puescudo.png', id = constantes.ESCUDO_ON)
+                  self.escudo_rodape = hitbox(110, constantes.Y-40, 'Imagens/coletáveis/puescudo.png', id = constantes.ESCUDO_ON)
                   self.grupo_rodape_escudo.add(self.escudo_rodape)
 
               elif self.coletavel.id == constantes.TIRO_TRIPLO:
                   self.countdown_tiros = constantes.DURACAO_TIRO * constantes.FPS
                   # tipo_tiro = "Triplo"
                   col_id = constantes.TIRO_TRIPLO
-                  self.tiro_rodape = hitbox(40, constantes.Y-40, 'Imagens/putiro3.png', id = constantes.TIRO_TRIPLO)
+                  self.tiro_rodape = hitbox(40, constantes.Y-40, 'Imagens/coletáveis/putiro3.png', id = constantes.TIRO_TRIPLO)
                   self.grupo_rodape_tiro.add(self.tiro_rodape)
 
               elif self.coletavel.id == constantes.TIRO_LIL:
                   self.countdown_tiros = constantes.DURACAO_TIRO * constantes.FPS
                   # tipo_tiro = "Follower"
                   col_id = constantes.TIRO_LIL
-                  self.tiro_rodape = hitbox(40, constantes.Y-40, 'Imagens/aviao_suporte.png', id = constantes.TIRO_LIL)
+                  self.tiro_rodape = hitbox(40, constantes.Y-40, 'Imagens/coletáveis/aviao_suporte.png', id = constantes.TIRO_LIL)
                   self.grupo_rodape_tiro.add(self.tiro_rodape)
 
               self.rodape = True

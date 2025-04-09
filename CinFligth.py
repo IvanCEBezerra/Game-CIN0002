@@ -44,7 +44,7 @@ fps = 30
 velocidade_aviao = 8
 
 # Criação do primeiro hitbox do player do jogo (o aviaozinho), e o coloca em um grupo de sprites (para ser renderizado dentro do loop do jogo)
-aviaozinho = hitbox(x / 2, y / 1.3, 'Imagens/avião_principal_neutro.png')
+aviaozinho = hitbox(x / 2, y / 1.3, 'Imagens/player/aviao_principal_neutro.png')
 aviaozinho.ativacao = False  # Define se o aviaozinho está ativado
 grupo_aviaozinho = pygame.sprite.Group()  # Cria o grupo de sprites para o aviaozinho
 grupo_aviaozinho.add(aviaozinho)
@@ -99,14 +99,14 @@ while rodando:
         aviaozinho.mover_horizontal(velocidade_aviao)
 
         # Altera a imagem para a direita
-        aviaozinho.image = pygame.image.load("Imagens/aviao_principal_direita.png")  
+        aviaozinho.image = pygame.image.load("Imagens/player/aviao_principal_direita.png")  
     
     # Se a tecla para esquerda (←) estiver pressionada e o avião não ultrapassar o limite da tela (com base na posição x da parte esquerda do hitbox)
     if (tecla[pygame.K_LEFT] == True or tecla[pygame.K_a] == True) and aviaozinho.rect.left > 0:
         aviaozinho.mover_horizontal(-velocidade_aviao)
 
         # Altera a imagem para a esquerda
-        aviaozinho.image = pygame.image.load("Imagens/aviao_principal_esquerda.png")
+        aviaozinho.image = pygame.image.load("Imagens/player/aviao_principal_esquerda.png")
 
     # Se o escudo estiver ativado ou estiver nulo, atualize a posição dele
     if escudo.ativacao == True or escudo.ativacao == None:
@@ -134,7 +134,7 @@ while rodando:
             lil_aviao.mover_vertical(-velocidade_aviao)
     elif tipo_tiro == "Follower" and aviaozinho.ativacao == False:
         aviaozinho.ativacao = True  # Ativa o aviaozinho
-        lil_aviao = hitbox(aviaozinho.rect.left + 44, aviaozinho.rect.bottom + 25,"Imagens/av_suporte_neutro.png" )
+        lil_aviao = hitbox(aviaozinho.rect.left + 44, aviaozinho.rect.bottom + 25,"Imagens/coletáveis/av_suporte_neutro.png" )
         grupo_lil_aviao.add(lil_aviao)  # Adiciona o pequeno avião ao grupo
 
     # Se a tecla espaço estiver pressionada, o cooldown for um terço do valor do fps, e o tipo de tiro for default, crie a hitbox de um tiro e o coloque no grupo de tiros, e resete o cooldown
@@ -172,7 +172,7 @@ while rodando:
 
     # Se nenhuma das teclas esquerda ou direita estiver pressionada, a imagem do avião volta para a posição inicial
     if (tecla[pygame.K_LEFT] == False and tecla[pygame.K_a] == False) and (tecla[pygame.K_RIGHT] == False and tecla[pygame.K_d] == False):
-        aviaozinho.image = pygame.image.load("Imagens/avião_principal_neutro.png")
+        aviaozinho.image = pygame.image.load("Imagens/player/aviao_principal_neutro.png")
 
     coletavel_id = gerenciador_coletaveis.update(aviaozinho)
 
