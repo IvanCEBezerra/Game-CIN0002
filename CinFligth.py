@@ -26,6 +26,29 @@ def spawnar_inimigo():
     # Adiciona o inimigo ao grupo de inimigos
     grupo_inimigos.add(inimigo)
 
+def reiniciar_jogo():
+    global vida, score, taxa_spawn, velocidade_aviao, fundo_scroll, tipo_tiro
+    global grupo_inimigos, grupo_tiro, grupo_balas_inimigo, grupo_horizontais, aviaozinho
+
+    vida = 2
+    score = 0
+    taxa_spawn = 2.2
+    velocidade_aviao = 8
+    fundo_scroll = 0
+    tipo_tiro = "Default"
+    grupo_inimigos.empty()
+    grupo_tiro.empty()
+    grupo_balas_inimigo.empty()
+    grupo_horizontais.empty()
+    aviaozinho.rect.center = (x / 2, y / 1.3)
+    gerenciador_coletaveis.grupo_rodape_escudo.empty()
+    gerenciador_coletaveis.grupo_rodape_tiro.empty()
+    gerenciador_coletaveis.coletavel.ativacao = False
+    pygame.mixer.init()
+    pygame.mixer.music.load("Musicas/track_gameplay.ogg")
+    pygame.mixer.music.set_volume(15)
+    pygame.mixer.music.play(-1)
+    pygame.display.update()
 
 # Inicializa o pygame
 pygame.init()
@@ -153,18 +176,17 @@ while rodando:
                     exit()
             if tecla[pygame.K_r] == True:
                 # Reinicia as variáveis do jogo
-                vida = 2
-                score = 0
-                taxa_spawn = 2.2
-                velocidade_aviao = 8
-                fundo_scroll += 7
-                tipo_tiro = "Default"
-                grupo_inimigos.empty()
-                grupo_tiro.empty()
-                grupo_balas_inimigo.empty()
-                grupo_horizontais.empty()
-                aviaozinho.rect.center = (x / 2, y / 1.3)
+                reiniciar_jogo()
                 break  # Sai do loop de "Game Over" e volta ao jogo
+
+            if tecla[pygame.K_m] == True:
+                # Volta para o menu do jogo
+                menu = Menu(tela)
+                opcao = menu.rodar()
+                if opcao == "jogar":
+                    reiniciar_jogo()
+                    break
+
 
         fundo = pygame.image.load("Imagens/background.png")
         tela.blit(fundo, (0, fundo_scroll))  # Desenha o fundo novamente
