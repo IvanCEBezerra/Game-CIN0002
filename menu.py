@@ -47,6 +47,34 @@ class Menu:
             self.tela.blit(img_hover, pos_img)
         else:
             self.tela.blit(img_default, pos_img)
+    
+    def tela_opcoes(self):
+        executando = True
+        volume = pygame.mixer.music.get_volume()  # Obtém o volume atual
+        fonte_opcoes = pygame.font.Font("m04b.ttf", 35)  # Reduz o tamanho da fonte
+        img_fundo_opcoes = pygame.image.load("imagens/IMG-8533.png").convert()  # Carrega a imagem de fundo
+
+        while executando:
+            self.tela.blit(img_fundo_opcoes, (0, 0))  # Desenha a imagem de fundo
+            self.desenhar_texto("Musica", fonte_opcoes, (255, 255, 255), self.largura // 2, 50)
+            self.desenhar_texto(f"Volume: {int(volume * 100)}%", fonte_opcoes, (255, 255, 255), self.largura // 2, 150)
+            self.desenhar_texto("Pressione ESC para voltar", fonte_opcoes, (255, 255, 255), self.largura // 2, 250)
+
+            for evento in pygame.event.get():
+                if evento.type == pygame.QUIT:
+                    pygame.quit()
+                    exit()
+                if evento.type == pygame.KEYDOWN:
+                    if evento.key == pygame.K_ESCAPE:  # Voltar ao menu principal
+                        executando = False
+                    elif evento.key == pygame.K_UP:  # Aumentar volume
+                        volume = min(1.0, volume + 0.1)
+                        pygame.mixer.music.set_volume(volume)
+                    elif evento.key == pygame.K_DOWN:  # Diminuir volume
+                        volume = max(0.0, volume - 0.1)
+                        pygame.mixer.music.set_volume(volume)
+
+            pygame.display.flip()
 
     def rodar(self):
         pygame.mixer.init()
@@ -74,6 +102,8 @@ class Menu:
                     pygame.mixer.music.stop()
                     if self.esta_sobre_pixel(self.mask_jogar, self.pos_jogar, mouse_pos):
                         return "jogar"
+                    if self.esta_sobre_pixel(self.mask_opcoes, self.pos_opcoes, mouse_pos):
+                        self.tela_opcoes()
                     if self.esta_sobre_pixel(self.mask_sair, self.pos_sair, mouse_pos):
                         pygame.quit()
                         exit()

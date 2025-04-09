@@ -27,9 +27,12 @@ def spawnar_inimigo():
     grupo_inimigos.add(inimigo)
 
 def reiniciar_jogo():
-    global vida, score, taxa_spawn, velocidade_aviao, fundo_scroll, tipo_tiro
+    global vida, score, taxa_spawn, velocidade_aviao, fundo_scroll, tipo_tiro, grupo_vida
     global grupo_inimigos, grupo_tiro, grupo_balas_inimigo, grupo_horizontais, aviaozinho
 
+    for vida in grupo_vida:
+            vida.image = pygame.image.load("Imagens/life.png")
+            vida.ativacao = True
     vida = 2
     score = 0
     taxa_spawn = 2.2
@@ -49,7 +52,6 @@ def reiniciar_jogo():
     pygame.mixer.music.set_volume(15)
     pygame.mixer.music.play(-1)
     pygame.display.update()
-
 # Inicializa o pygame
 pygame.init()
 
@@ -162,10 +164,6 @@ while rodando:
         fundo = pygame.image.load("Imagens/gameover.png")
         tela.blit(fundo, (0, 0))  # Desenha a imagem na tela
         pygame.display.update()
-    
-        for vida in grupo_vida:
-            vida.image = pygame.image.load("Imagens/life.png")
-            vida.ativacao = True
 
         # Loop para a tela de morte
         while True:
@@ -431,9 +429,9 @@ while rodando:
     if gerenciador_coletaveis.coletavel.ativacao == True:
         gerenciador_coletaveis.grupo_coletavel.draw(tela)
     #if gerenciador_coletaveis.rodape == True:
-    if len(gerenciador_coletaveis.grupo_rodape_tiro) > 0:
+    if len(gerenciador_coletaveis.grupo_rodape_tiro) > 0 and tipo_tiro != "Default":
         gerenciador_coletaveis.grupo_rodape_tiro.draw(tela)
-    if len(gerenciador_coletaveis.grupo_rodape_escudo) > 0:
+    if len(gerenciador_coletaveis.grupo_rodape_escudo) > 0 and escudo.ativacao == True:
         gerenciador_coletaveis.grupo_rodape_escudo.draw(tela)
 
     for inimigo in grupo_horizontais:
