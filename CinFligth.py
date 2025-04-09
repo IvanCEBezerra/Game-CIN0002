@@ -10,7 +10,7 @@ import random
 
 def spawnar_inimigo():
     # Gera uma posição aleatória para o inimigo
-    pos_x = random.randint(30, x - 50)  # Garante que o inimigo não saia da tela
+    pos_x = random.randint(100, x - 100)  # Garante que o inimigo não saia da tela
     pos_y = -20
 
     tipo_inimigo = random.randint(0, 1)  # Gera um número aleatório para escolher o tipo de inimigo (0 ou 1)
@@ -131,6 +131,10 @@ while rodando:
 
     if vida <= 0:
         pygame.mixer.music.stop()
+        pygame.mixer.init()
+        pygame.mixer.music.load("Musicas/death.wav")
+        pygame.mixer.music.set_volume(0.5)
+        pygame.mixer.music.play(-1)
         # Carrega a imagem de "Game Over"
         fundo = pygame.image.load("Imagens/gameover.png")
         tela.blit(fundo, (0, 0))  # Desenha a imagem na tela

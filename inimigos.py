@@ -1,4 +1,5 @@
 from Hitabox import hitbox
+import random
 import constantes
 
 class inimigo_horizontal(hitbox):
@@ -6,10 +7,11 @@ class inimigo_horizontal(hitbox):
         super().__init__(x, y, diretorio, id)
 
         # Define a velocidade do inimigo
-        self.velocidade = 10
+        self.velocidade = random.randint(6, 11)
+        # Define a velocidade do inimigo
 
         # Define a direção do movimento do inimigo (1 = direita, -1 = esquerda)
-        self.direcao = 1
+        self.direcao = -1
 
         # Define a quantidade de pixels que o inimigo deve se mover para baixo
         self.descer = 0
