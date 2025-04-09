@@ -10,7 +10,7 @@ import random
 
 def spawnar_inimigo():
     # Gera uma posição aleatória para o inimigo
-    pos_x = random.randint(20, x - 50)  # Garante que o inimigo não saia da tela
+    pos_x = random.randint(30, x - 50)  # Garante que o inimigo não saia da tela
     pos_y = -20
 
     tipo_inimigo = random.randint(0, 1)  # Gera um número aleatório para escolher o tipo de inimigo (0 ou 1)
@@ -31,7 +31,7 @@ def spawnar_inimigo():
 pygame.init()
 
 # Define o valor do score e a fonte de texto do score (seu tipo e seu tamanho)
-fonte_score = pygame.font.SysFont("comicsanss", 40)
+fonte_score = pygame.font.Font("m04b.ttf", 30)
 score = 0
 
 # Dimensões da tela
@@ -113,15 +113,24 @@ grupo_horizontais = pygame.sprite.Group()
 # Variável para controlar o tempo de spawn dos inimigos
 tempo_spawn = 0
 
+#dificuldade do jogo
+taxa_spawn = 2.2 # Taxa de spawn dos inimigos (em quadros)
+
 # Variável que verifica se o jogo está aberto
 rodando = True
 
+# inicaliza a música
+pygame.mixer.init()
+pygame.mixer.music.load("Musicas/track_gameplay.ogg")
+pygame.mixer.music.set_volume(0.5)
+pygame.mixer.music.play(-1)
 # Loop do jogo
 while rodando:
     # Limita o número de quadros que o jogo pode renderizar por segundo, garantindo que o FPS não ultrapasse o valor definido
     clock.tick(fps)
 
     if vida <= 0:
+        pygame.mixer.music.stop()
         # Carrega a imagem de "Game Over"
         fundo = pygame.image.load("Imagens/gameover.png")
         tela.blit(fundo, (0, 0))  # Desenha a imagem na tela
@@ -142,6 +151,10 @@ while rodando:
                 # Reinicia as variáveis do jogo
                 vida = 2
                 score = 0
+                taxa_spawn = 2.2
+                velocidade_aviao = 8
+                fundo_scroll += 7
+                tipo_tiro = "Default"
                 grupo_inimigos.empty()
                 grupo_tiro.empty()
                 grupo_balas_inimigo.empty()
@@ -223,6 +236,9 @@ while rodando:
     # Se a tecla espaço estiver pressionada, o cooldown for um terço do valor do fps, e o tipo de tiro for default, crie a hitbox de um tiro e o coloque no grupo de tiros, e resete o cooldown
     if tecla[pygame.K_SPACE] == True and cooldown >= fps/1.9 and (tipo_tiro == "Default" or tipo_tiro == "Follower"):
         tiro = hitbox(aviaozinho.rect.midtop[0], aviaozinho.rect.midtop[1], "Imagens/bullet.png")
+        som_tiro = pygame.mixer.Sound("Musicas/bulletshot-impact-sound-effect-230462.wav")
+        som_tiro.set_volume(1)
+        som_tiro.play() 
         grupo_tiro.add(tiro)
         if tipo_tiro == "Follower":
             # Se o tipo de tiro for "Follower", cria tiros para o pequeno avião também
@@ -232,6 +248,9 @@ while rodando:
     
     # Se a tecla do espaço estiver pressionada, o cooldown for um terço do valor do fps, e o tipo do tiro for default, crie três linhas de tiros diferentes, e os guarde junto com a posição do meio do aviaozinho após a criação das balas (E resete o cooldown)
     elif tecla[pygame.K_SPACE] == True and cooldown >= fps and tipo_tiro == "Triplo":
+        som_tiro_triplo = pygame.mixer.Sound("Musicas/mixkit-multiple-fireworks-explosions-1689.wav")
+        som_tiro_triplo.set_volume(1)
+        som_tiro_triplo.play()
         tiros = pygame.sprite.Group()  # Cria um novo grupo para os tiros
         tiro_middle = hitbox(aviaozinho.rect.midtop[0], aviaozinho.rect.midtop[1], "Imagens/bullet.png")
         tiro_middle.posicao_spawn = aviaozinho.rect.midtop[0]  # Define a posição de spawn do tiro do meio
@@ -248,6 +267,9 @@ while rodando:
         cooldown = 1  # Reseta o cooldown após atirar
     
     elif tecla[pygame.K_SPACE] == True and cooldown >= fps * 1.2 and tipo_tiro == "Bomb":
+        som_bomba = pygame.mixer.Sound("Musicas/266785551-aircraft-shoot-down-jet-engine.wav")
+        som_bomba.set_volume(1)
+        som_bomba.play()
         bomb = hitbox(aviaozinho.rect.midtop[0], aviaozinho.rect.midtop[1], "Imagens/bomb.png")
         bomb.ativacao = False  # A bomba começa desativada
         bomb.posicao_spawn = aviaozinho.rect.midtop[1]  # Define a posição de spawn da bomba
@@ -265,14 +287,26 @@ while rodando:
         if coletavel_id == constantes.TIRO_DEFAULT:
             tipo_tiro = "Default"
         elif coletavel_id == constantes.TIRO_BOMBA:
+            som_coletavel = pygame.mixer.Sound("Musicas/duffle-bag-lifting (online-audio-converter.com).wav")
+            som_coletavel.set_volume(1)
+            som_coletavel.play()
             tipo_tiro = "Bomb"
         elif coletavel_id == constantes.ESCUDO_ON:
             escudo.ativacao = True
+            som_escudo = pygame.mixer.Sound("Musicas/mixkit-video-game-health-recharge-2837.wav")
+            som_escudo.set_volume(1)
+            som_escudo.play()
         elif coletavel_id == constantes.ESCUDO_OFF:
             escudo.ativacao = False
         elif coletavel_id == constantes.TIRO_TRIPLO:
+            som_coletavel = pygame.mixer.Sound("Musicas/duffle-bag-lifting (online-audio-converter.com).wav")
+            som_coletavel.set_volume(1)
+            som_coletavel.play()
             tipo_tiro = "Triplo"
         elif coletavel_id == constantes.TIRO_LIL:
+            som_coletavel = pygame.mixer.Sound("Musicas/mixkit-fast-car-drive-by-1538.wav")
+            som_coletavel.set_volume(1)
+            som_coletavel.play()
             tipo_tiro = "Follower"
 
     # Invoca e focaliza o fundo no centro da tela, desenhando o plano de fundo
@@ -333,6 +367,9 @@ while rodando:
             
             if bomba.ativacao == True and bomba.tempo_existencia == 0:
                 bomba.image = pygame.image.load("Imagens/explosion.png")
+                som_explosao = pygame.mixer.Sound("Musicas/mixkit-8-bit-bomb-explosion-2811.wav")
+                som_explosao.set_volume(1)
+                som_explosao.play()
                 bomba.rect = bomba.image.get_rect()
                 bomba.rect.center = [tempx, tempy]
             
@@ -352,7 +389,7 @@ while rodando:
     texto = fonte_score.render("Score: " + str(score), True, (0, 0, 0))
 
     # Demonstra o score to player
-    tela.blit(texto, [0, 0])
+    tela.blit(texto, [10, 10])
 
     # Desenha todos os sprites dentro de cada grupo
     grupo_aviaozinho.draw(tela)
@@ -393,6 +430,9 @@ while rodando:
     
     elif colisoes_tiro_inimigo and vida > 0:
         vida -= 1
+        som_dano = pygame.mixer.Sound("Musicas/mixkit-arcade-video-game-explosion-2810.wav")
+        som_dano.set_volume(1)
+        som_dano.play()
     # Verifica colisões entre inimigos e o aviaozinho
     colisoes_inimigos = pygame.sprite.groupcollide(grupo_inimigos, grupo_aviaozinho, True, False)
     if colisoes_inimigos and escudo.ativacao == True:
@@ -402,6 +442,9 @@ while rodando:
 
     elif colisoes_inimigos and vida > 0:
         vida -= 1  # Exemplo: reduz a vida do jogador
+        som_dano = pygame.mixer.Sound("Musicas/mixkit-arcade-video-game-explosion-2810.wav")
+        som_dano.set_volume(1)
+        som_dano.play()
 
     # Combina todas as colisões em um único dicionário
     colisoes_combinadas = {}
@@ -416,10 +459,15 @@ while rodando:
             score += 10  # Adiciona 10 pontos ao score
             print("Inimigo destruído!")
 
+        if score % 100 == 0:
+            taxa_spawn /= 1.33
+            
+
     # Spawna um inimigo a cada 2 segundos (ajuste conforme necessário)
-    if tempo_spawn > fps * 2:
+    if tempo_spawn > fps * taxa_spawn:
         spawnar_inimigo()
         tempo_spawn = 0
+        fundo_scroll += 0.05
 
     if vida <= 1:
         for life in grupo_vida:
