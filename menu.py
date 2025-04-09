@@ -48,6 +48,23 @@ class Menu:
         else:
             self.tela.blit(img_default, pos_img)
 
+    def mostrar_creditos(self):
+        """Exibe a tela de créditos."""
+        executando = True
+        fundo = pygame.image.load("Imagens/CREDITOS.jpg")  # Carrega a imagem de fundo
+
+        while executando:
+            self.tela.blit(fundo, (0, 0))  # Desenha a imagem de fundo na tela
+
+            for evento in pygame.event.get():
+                if evento.type == pygame.QUIT:
+                    pygame.quit()
+                    exit()
+                if evento.type == pygame.KEYDOWN and evento.key == pygame.K_ESCAPE:
+                    executando = False  # Sai da tela de créditos
+
+            pygame.display.flip()
+
     def rodar(self):
         pygame.mixer.init()
         pygame.mixer.music.load("Musicas/menu_song.ogg")
@@ -74,9 +91,10 @@ class Menu:
                     pygame.mixer.music.stop()
                     if self.esta_sobre_pixel(self.mask_jogar, self.pos_jogar, mouse_pos):
                         return "jogar"
+                    if self.esta_sobre_pixel(self.mask_creditos, self.pos_creditos, mouse_pos):
+                        self.mostrar_creditos()  # Chama a tela de créditos
                     if self.esta_sobre_pixel(self.mask_sair, self.pos_sair, mouse_pos):
                         pygame.quit()
                         exit()
-                    # Os outros botões ainda não têm funcionalidade
 
             pygame.display.flip()
