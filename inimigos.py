@@ -21,12 +21,6 @@ class inimigo_horizontal(hitbox):
         # Inverte a direção se o inimigo atingir as bordas da tela
         if self.rect.left < 0 or self.rect.right > constantes.X:
             self.direcao *= -1
-            self.descer = 100  # Define a quantidade de pixels para descer
-
-    def tiros(self):
-        # Cria um tiro na posição do inimigo
-        tiro = hitbox(self.rect.centerx, self.rect.bottom, 'Imagens/tiro.png')
-        return tiro
 
     def update(self):
         # Atualiza o movimento do inimigo

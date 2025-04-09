@@ -18,11 +18,14 @@ def spawnar_inimigo():
     # Cria uma nova instância do inimigo
     if tipo_inimigo == 0:
         inimigo = inimigo_horizontal(pos_x, pos_y, 'Imagens/aviao_reto.png')
+        grupo_horizontais.add(inimigo)  # Adiciona o inimigo ao grupo de inimigos horizontais 
+        
     elif tipo_inimigo == 1:
         inimigo = kamikaze(pos_x, pos_y, 'Imagens/aviao_reto.png')
 
     # Adiciona o inimigo ao grupo de inimigos
     grupo_inimigos.add(inimigo)
+
 
 # Inicializa o pygame
 pygame.init()
@@ -85,6 +88,7 @@ grupo_tiro = pygame.sprite.Group()  # Grupo de tiros (balas)
 lista_tiro_triplo = []  # Lista de tiros do tipo "triplo"
 grupo_bomba = pygame.sprite.Group()  # Grupo de bombas
 grupo_tiro_triplo = pygame.sprite.Group()  # Grupo de tiros do tipo "triplo"
+grupo_balas_inimigo = pygame.sprite.Group()  # Grupo de balas dos inimigos
 
 #Define o escudo, e o grupo do escudo.
 escudo = hitbox(aviaozinho.rect.center[0], aviaozinho.rect.center[1], 'Imagens/shield.png')
@@ -97,10 +101,14 @@ tipo_tiro = "Default"
 # Cooldown do tiro (intervalo entre os tiros)
 cooldown = fps/3
 
+# Cooldown do inimigo (intervalo entre os tiros dos inimigos)   
+cooldown_inimigo = fps/3
+
 gerenciador_coletaveis = gc(escudo)
 
 # Grupo de sprites para os inimigos
 grupo_inimigos = pygame.sprite.Group()
+grupo_horizontais = pygame.sprite.Group()
 
 # Variável para controlar o tempo de spawn dos inimigos
 tempo_spawn = 0
@@ -112,6 +120,42 @@ rodando = True
 while rodando:
     # Limita o número de quadros que o jogo pode renderizar por segundo, garantindo que o FPS não ultrapasse o valor definido
     clock.tick(fps)
+
+    if vida <= 0:
+        # Carrega a imagem de "Game Over"
+        fundo = pygame.image.load("Imagens/gameover.png")
+        tela.blit(fundo, (0, 0))  # Desenha a imagem na tela
+        pygame.display.update()
+    
+        for vida in grupo_vida:
+            vida.image = pygame.image.load("Imagens/life.png")
+            vida.ativacao = True
+
+        # Loop para a tela de morte
+        while True:
+            tecla = pygame.key.get_pressed()
+            for evento in pygame.event.get():
+                if evento.type == pygame.QUIT:
+                    pygame.quit()
+                    exit()
+            if tecla[pygame.K_r] == True:
+                # Reinicia as variáveis do jogo
+                vida = 2
+                score = 0
+                grupo_inimigos.empty()
+                grupo_tiro.empty()
+                grupo_balas_inimigo.empty()
+                grupo_horizontais.empty()
+                aviaozinho.rect.center = (x / 2, y / 1.3)
+                break  # Sai do loop de "Game Over" e volta ao jogo
+
+        fundo = pygame.image.load("Imagens/background.png")
+        tela.blit(fundo, (0, fundo_scroll))  # Desenha o fundo novamente
+        fundo_scroll = -y  # Reseta a posição do fundo
+        pygame.display.update()
+
+
+
     
     # Incrementa o contador de tempo
     tempo_spawn += 1
@@ -297,6 +341,13 @@ while rodando:
             elif bomba.ativacao == True:
                 bomba.kill()
     
+    if len(grupo_balas_inimigo) > 0:
+        for bala in grupo_balas_inimigo:
+            if bala.rect.y < y:
+                bala.rect.y += 10
+            else:
+                bala.kill()
+    
     # Define o texto do score a ser exibido na tela (e a sua cor)
     texto = fonte_score.render("Score: " + str(score), True, (0, 0, 0))
 
@@ -311,6 +362,7 @@ while rodando:
         grupo_lil_aviao.draw(tela)
     grupo_tiro.draw(tela)
     grupo_bomba.draw(tela)
+    grupo_balas_inimigo.draw(tela)
     for linha in lista_tiro_triplo:
         linha.draw(tela)
     if gerenciador_coletaveis.coletavel.ativacao == True:
@@ -321,17 +373,42 @@ while rodando:
     if len(gerenciador_coletaveis.grupo_rodape_escudo) > 0:
         gerenciador_coletaveis.grupo_rodape_escudo.draw(tela)
 
+    for inimigo in grupo_horizontais:
+        if inimigo.tempo_existencia >= fps:
+            bala = hitbox(inimigo.rect.midbottom[0], inimigo.rect.midbottom[1], "Imagens/bullet.png")
+            grupo_balas_inimigo.add(bala)  # Adiciona a bala ao grupo de balas
+            inimigo.tempo_existencia = 0
+            
     # Verifica colisões entre tiros e inimigos para cada tipo de tiro
     colisoes_tiro_simples = pygame.sprite.groupcollide(grupo_tiro, grupo_inimigos, True, True)
     colisoes_tiro_triplo = pygame.sprite.groupcollide(grupo_tiro_triplo, grupo_inimigos, True, True)
     colisoes_bomba = pygame.sprite.groupcollide(grupo_bomba, grupo_inimigos, True, True)
-    colisoes_inimigo = pygame.sprite.groupcollide(grupo_inimigos, grupo_aviaozinho, False, True)
+
+    # Verifica colisões entre balas dos inimigos e o aviaozinho
+    colisoes_tiro_inimigo  = pygame.sprite.groupcollide(grupo_balas_inimigo, grupo_aviaozinho, True, False)
+    if colisoes_tiro_inimigo and escudo.ativacao == True:
+        escudo.ativacao = False
+        escudo.kill()
+        gerenciador_coletaveis.grupo_rodape_escudo.empty()
+    
+    elif colisoes_tiro_inimigo and vida > 0:
+        vida -= 1
+    # Verifica colisões entre inimigos e o aviaozinho
+    colisoes_inimigos = pygame.sprite.groupcollide(grupo_inimigos, grupo_aviaozinho, True, False)
+    if colisoes_inimigos and escudo.ativacao == True:
+        escudo.ativacao = False
+        escudo.kill()
+        gerenciador_coletaveis.grupo_rodape_escudo.empty()
+
+    elif colisoes_inimigos and vida > 0:
+        vida -= 1  # Exemplo: reduz a vida do jogador
 
     # Combina todas as colisões em um único dicionário
     colisoes_combinadas = {}
     colisoes_combinadas.update(colisoes_tiro_simples)
     colisoes_combinadas.update(colisoes_tiro_triplo)
     colisoes_combinadas.update(colisoes_bomba)
+    colisoes_combinadas.update(colisoes_inimigos)
 
     # Atualiza o score com base nas colisões combinadas
     for tiro, inimigos in colisoes_combinadas.items():
@@ -363,6 +440,9 @@ while rodando:
 
     # Aumente o cooldown em um 
     cooldown += 1
+
+    for inimigo in grupo_horizontais:
+        inimigo.tempo_existencia += 1
 
 # Fecha o pygame quando o loop terminar
 pygame.quit()
