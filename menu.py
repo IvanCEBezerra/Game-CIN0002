@@ -4,7 +4,7 @@ class Menu:
     def __init__(self, tela):
         self.tela = tela
         self.largura, self.altura = self.tela.get_size()
-        self.fonte_titulo = pygame.font.SysFont("Reydex", 60)
+        self.fonte_titulo = pygame.font.Font("m04b.ttf", 80)
 
         # Posicoes dos botoes (usadas para desenhar e para a mask)
         self.pos_jogar = (300, 200)
@@ -49,9 +49,14 @@ class Menu:
             self.tela.blit(img_default, pos_img)
 
     def rodar(self):
+        pygame.mixer.init()
+        pygame.mixer.music.load("Musicas/menu_song.ogg")
+        pygame.mixer.music.set_volume(0.5)
+        pygame.mixer.music.play(-1)
         executando = True
+        self.img_fundo = pygame.image.load("imagens/IMG-8525.png").convert()
         while executando:
-            self.tela.fill((50, 50, 50))
+            self.tela.blit(self.img_fundo, (0, 0))
             mouse_pos = pygame.mouse.get_pos()
 
             self.desenhar_texto("CIn Flight", self.fonte_titulo, (255, 255, 255), self.largura // 2, 100)
@@ -66,6 +71,7 @@ class Menu:
                     pygame.quit()
                     exit()
                 if evento.type == pygame.MOUSEBUTTONDOWN:
+                    pygame.mixer.music.stop()
                     if self.esta_sobre_pixel(self.mask_jogar, self.pos_jogar, mouse_pos):
                         return "jogar"
                     if self.esta_sobre_pixel(self.mask_sair, self.pos_sair, mouse_pos):
