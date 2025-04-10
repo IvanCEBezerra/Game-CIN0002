@@ -2,7 +2,7 @@
 # CInFlight
 import pygame
 import constantes
-from Hitabox import hitbox as hitbox
+from Hitabox import hitbox as hitbox, Explosao
 from GerenciadorColecionaveis import GerenciadorColecionaveis as gc
 from menu import Menu
 from inimigos import inimigo_horizontal, kamikaze
@@ -44,6 +44,7 @@ def reiniciar_jogo():
     grupo_tiro.empty()
     grupo_balas_inimigo.empty()
     grupo_horizontais.empty()
+    grupo_explosoes.empty()
     aviaozinho.rect.center = (x / 2, y / 1.3)
     gerenciador_coletaveis.grupo_rodape_escudo.empty()
     gerenciador_coletaveis.grupo_rodape_tiro.empty()
@@ -142,6 +143,7 @@ gerenciador_coletaveis = gc(escudo)
 # Grupo de sprites para os inimigos
 grupo_inimigos = pygame.sprite.Group()
 grupo_horizontais = pygame.sprite.Group()
+grupo_explosoes = pygame.sprite.Group()
 
 # Variável para controlar o tempo de spawn dos inimigos
 tempo_spawn = 0
@@ -455,6 +457,15 @@ while rodando:
     colisoes_tiro_triplo = pygame.sprite.groupcollide(grupo_tiro_triplo, grupo_inimigos, True, True)
     colisoes_bomba = pygame.sprite.groupcollide(grupo_bomba, grupo_inimigos, True, True)
 
+    # verifica colisao entre tiro bomba e inimigos
+    for inimigo in colisoes_bomba:
+        # Adiciona uma explosão na posição do inimigo
+        explosao = Explosao(inimigo.rect.centerx, inimigo.rect.centery)
+        grupo_explosoes.add(explosao)
+        som_explosao = pygame.mixer.Sound("Musicas/mixkit-8-bit-bomb-explosion-2811.wav")
+        som_explosao.set_volume(volume*1.5)
+        som_explosao.play()
+
     # Verifica colisões entre balas dos inimigos e o aviaozinho
     colisoes_tiro_inimigo  = pygame.sprite.groupcollide(grupo_balas_inimigo, grupo_aviaozinho, True, False)
     if colisoes_tiro_inimigo and escudo.ativacao == True:
@@ -469,17 +480,21 @@ while rodando:
         som_dano.play()
     # Verifica colisões entre inimigos e o aviaozinho
     colisoes_inimigos = pygame.sprite.groupcollide(grupo_inimigos, grupo_aviaozinho, True, False)
-    if colisoes_inimigos and escudo.ativacao == True:
-        escudo.ativacao = False
-        escudo.kill()
-        gerenciador_coletaveis.grupo_rodape_escudo.empty()
+    if colisoes_inimigos:
+        for inimigo in colisoes_inimigos:
+            # Adiciona uma explosão na posição do inimigo
+            explosao = Explosao(inimigo.rect.centerx, inimigo.rect.centery)
+            grupo_explosoes.add(explosao)
 
-    elif colisoes_inimigos and vida > 0:
-        img_faisca = pygame.image.load("Imagens/faisca.png")
-        vida -= 1  # Exemplo: reduz a vida do jogador
-        som_dano = pygame.mixer.Sound("Musicas/mixkit-arcade-video-game-explosion-2810.wav")
-        som_dano.set_volume(volume*1.5)
-        som_dano.play()
+        if escudo.ativacao:
+            escudo.ativacao = False
+            escudo.kill()
+            gerenciador_coletaveis.grupo_rodape_escudo.empty()
+        elif vida > 0:
+            vida -= 1
+            som_dano = pygame.mixer.Sound("Musicas/mixkit-arcade-video-game-explosion-2810.wav")
+            som_dano.set_volume(volume * 1.5)
+            som_dano.play()
 
     # Combina todas as colisões em um único dicionário
     colisoes_combinadas = {}
@@ -515,6 +530,10 @@ while rodando:
 
     # Renderiza os inimigos
     grupo_inimigos.draw(tela)
+
+    # Atualiza e desenha as explosões
+    grupo_explosoes.update()
+    grupo_explosoes.draw(tela)
 
     grupo_vida.draw(tela)
 

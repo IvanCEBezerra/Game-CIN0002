@@ -34,3 +34,17 @@ class hitbox (pygame.sprite.Sprite):
     # Move verticalmente a posição do hitbox na tela, em uma quantidade de pixels predefinida
     def mover_vertical(self, qtd_pixels):
         self.rect.y += qtd_pixels
+
+class Explosao(pygame.sprite.Sprite):
+    def __init__(self, x, y):
+        super().__init__()
+        self.image = pygame.image.load("Imagens/explosion.png")
+        self.image = pygame.transform.scale(self.image, (100, 100))  # Ajuste o tamanho da explosão
+        self.rect = self.image.get_rect()
+        self.rect.center = (x, y)
+        self.tempo_existencia = 0  # Contador para controlar o tempo de exibição
+
+    def update(self):
+        self.tempo_existencia += 1
+        if self.tempo_existencia > 15:  # Exibe a explosão por 15 quadros (ajuste conforme necessário)
+            self.kill()
