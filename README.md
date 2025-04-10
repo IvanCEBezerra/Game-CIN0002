@@ -39,16 +39,25 @@ Guilherme de Carvalho Fabri <gcf2>: Fabri trabalhou nas classes dos inimigos e n
 Gustavo Cravo Teixeira Filho <gctf>: Gustavo trabalhou no surgimento dos inimigos e no primeiro sistema de morte junto do Fabri e Edivaldo
 
 Edivaldo Ambrósio da Silva Filho <easf>: Edivaldo trabalhou na tela de game over, os tiros dos inimigos, e auxiliou na produção da apresentação. 
+
+
 Conceitos.
+
   Os conceitos aprendidos durante a disciplina que foram utilizados no projeto foram as: Listas já que os grupos do pygame são bem semelhantes às listas do python e utilizamos para cada grupo do jogo(avião, coletáveis e inimigos). Booleanas  que foram utilizadas para ativação dos (power up, spawn inimigo, spawn avião,manter o jogo rodando). Funções para a movimentação do avião(player). Laço para manter o jogo rodando dentro de um while True que quando o jogo era fechado se tornava False assim encerrando o jogo. Dicionário para salvar as colisões dos grupos de inimigos com o grupo de projéteis.
 
+
 Desafios e Erros.
+
   Quando começamos o projeto o maior desafio foi o estudo da biblioteca pygame e a programação orientada a objeto, por conta desse conteúdos não terem sido dados durante a disciplina de maneira mais direta nós tivemos uma grande dificuldade em iniciar o projeto.
 Qual foi o maior erro ?
   O maior erro do projeto foi a falta de um método definido de estudo com a biblioteca estávamos bastante perdidos no começo, porém com as indicações do Ivan e do Thito conseguimos criar um sistema de estudo que segue pelo esquema de assistir as video aulas do redu sobre programação orientada a objetos, uma vídeo aula detalhada em inglês e a leitura do site do pygame que explicava cada  da biblioteca.
 
+
 Qual foi o maior desafio ?
+
   Quando começamos o projeto o maior desafio foi o estudo da biblioteca pygame e a programação orientada a objeto, por conta desse conteúdos não terem sido dados durante a disciplina de maneira mais direta nós tivemos uma grande dificuldade em iniciar o projeto, além de aprender a mexer no github para conseguir atualizar um código em partes.
 
+
 Quais lições aprendidas durante o projeto ?
+
   Como funciona programação orientada a objetos, como se organizar em um trabalho em grupo, como funciona a biblioteca pygame e random, como pesquisar e estudar bibliotecas e diferentes formas de programação.
