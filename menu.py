@@ -31,6 +31,9 @@ class Menu:
         self.mask_creditos = pygame.mask.from_surface(self.img_creditos_default)
         self.mask_sair = pygame.mask.from_surface(self.img_sair_default)
 
+        #transição de volume
+        self.volume = 0.5
+
     def desenhar_texto(self, texto, fonte, cor, x, y):
         render = fonte.render(texto, True, cor)
         rect = render.get_rect(center=(x, y))
@@ -51,14 +54,18 @@ class Menu:
     def tela_opcoes(self):
         executando = True
         volume = pygame.mixer.music.get_volume()  # Obtém o volume atual
-        fonte_opcoes = pygame.font.Font("m04b.ttf", 35)  # Reduz o tamanho da fonte
+        fonte_opcoes_titulo = pygame.font.Font("m04b.ttf", 45) # Carrega a imagem de fundo
+        fonte_opcoes_volume = pygame.font.Font("m04b.ttf", 60)  # Carrega a imagem de fundo
+        fonte_opcoes = pygame.font.Font("m04b.ttf", 18)  # Reduz o tamanho da fonte
         img_fundo_opcoes = pygame.image.load("imagens/IMG-8533.png").convert()  # Carrega a imagem de fundo
 
         while executando:
             self.tela.blit(img_fundo_opcoes, (0, 0))  # Desenha a imagem de fundo
-            self.desenhar_texto("Musica", fonte_opcoes, (255, 255, 255), self.largura // 2, 50)
-            self.desenhar_texto(f"Volume: {int(volume * 100)}%", fonte_opcoes, (255, 255, 255), self.largura // 2, 150)
-            self.desenhar_texto("Pressione ESC para voltar", fonte_opcoes, (255, 255, 255), self.largura // 2, 250)
+            self.desenhar_texto("Musica", fonte_opcoes_titulo, (255, 255, 255), self.largura // 2, 75)
+            self.desenhar_texto(f"Volume: {int(volume * 100)}", fonte_opcoes_volume, (255, 255, 255), self.largura // 2, 250)
+            self.desenhar_texto("Pressione UP para aumentar o volume", fonte_opcoes, (255, 255, 255), self.largura // 2, 375)   
+            self.desenhar_texto("Pressione DOWN para diminuir o volume", fonte_opcoes, (255, 255, 255), self.largura // 2, 400)
+            self.desenhar_texto("Pressione ESC para voltar ao menu", fonte_opcoes, (255, 255, 255), self.largura // 2, 425)
 
             for evento in pygame.event.get():
                 if evento.type == pygame.QUIT:
@@ -67,6 +74,7 @@ class Menu:
                 if evento.type == pygame.KEYDOWN:
                     if evento.key == pygame.K_ESCAPE:  # Voltar ao menu principal
                         executando = False
+                        self.volume = volume  # Salva o volume atual
                     elif evento.key == pygame.K_UP:  # Aumentar volume
                         volume = min(1.0, volume + 0.1)
                         pygame.mixer.music.set_volume(volume)
@@ -116,10 +124,10 @@ class Menu:
                     pygame.quit()
                     exit()
                 if evento.type == pygame.MOUSEBUTTONDOWN:
-                    pygame.mixer.music.stop()
                     if self.esta_sobre_pixel(self.mask_jogar, self.pos_jogar, mouse_pos):
+                        pygame.mouse.set_visible(False)
+                        pygame.mixer.music.stop()
                         return "jogar"
-
                     if self.esta_sobre_pixel(self.mask_creditos, self.pos_creditos, mouse_pos):
                         self.mostrar_creditos()  # Chama a tela de créditos
                     if self.esta_sobre_pixel(self.mask_opcoes, self.pos_opcoes, mouse_pos):

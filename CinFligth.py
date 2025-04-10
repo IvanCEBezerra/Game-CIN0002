@@ -28,7 +28,7 @@ def spawnar_inimigo():
 
 def reiniciar_jogo():
     global vida, score, taxa_spawn, velocidade_aviao, fundo_scroll, tipo_tiro, grupo_vida
-    global grupo_inimigos, grupo_tiro, grupo_balas_inimigo, grupo_horizontais, aviaozinho
+    global grupo_inimigos, grupo_tiro, grupo_balas_inimigo, grupo_horizontais, aviaozinho, fundo_scroll_velocidade
 
     for vida in grupo_vida:
             vida.image = pygame.image.load("Imagens/life.png")
@@ -37,7 +37,8 @@ def reiniciar_jogo():
     score = 0
     taxa_spawn = 2.2
     velocidade_aviao = 8
-    fundo_scroll = 0
+    fundo_scroll = -y
+    fundo_scroll_velocidade = 7
     tipo_tiro = "Default"
     grupo_inimigos.empty()
     grupo_tiro.empty()
@@ -47,9 +48,10 @@ def reiniciar_jogo():
     gerenciador_coletaveis.grupo_rodape_escudo.empty()
     gerenciador_coletaveis.grupo_rodape_tiro.empty()
     gerenciador_coletaveis.coletavel.ativacao = False
+    pygame.mouse.set_visible(False)
     pygame.mixer.init()
     pygame.mixer.music.load("Musicas/track_gameplay.ogg")
-    pygame.mixer.music.set_volume(15)
+    pygame.mixer.music.set_volume(volume)
     pygame.mixer.music.play(-1)
     pygame.display.update()
 # Inicializa o pygame
@@ -68,9 +70,13 @@ tela = pygame.display.set_mode((x, y), pygame.FULLSCREEN)
 
 menu = Menu(tela)
 opcao = menu.rodar()
+volume = menu.volume
 if opcao != "jogar":
     pygame.quit()
     exit()
+
+# Esconde o cursor do mouse
+pygame.mouse.set_visible(False)
 
 # Define o background do jogo, utilizando uma imagem externa
 fundo = pygame.image.load("Imagens/background.png")
@@ -88,6 +94,8 @@ clock = pygame.time.Clock()
 fps = 30
 # define velociade do avião
 velocidade_aviao = 8
+# define a velocidade do fundo
+fundo_scroll_velocidade = 7
 
 #sistema de vida
 vida1 = hitbox(x - 50, y - 30, 'Imagens/life.png')
@@ -147,7 +155,7 @@ rodando = True
 # inicaliza a música
 pygame.mixer.init()
 pygame.mixer.music.load("Musicas/track_gameplay.ogg")
-pygame.mixer.music.set_volume(0.5)
+pygame.mixer.music.set_volume(volume)
 pygame.mixer.music.play(-1)
 # Loop do jogo
 while rodando:
@@ -155,10 +163,11 @@ while rodando:
     clock.tick(fps)
 
     if vida <= 0:
+        pygame.mouse.set_visible(True)  # Mostra o cursor novamente
         pygame.mixer.music.stop()
         pygame.mixer.init()
         pygame.mixer.music.load("Musicas/death.wav")
-        pygame.mixer.music.set_volume(0.5)
+        pygame.mixer.music.set_volume(volume)
         pygame.mixer.music.play(-1)
         # Carrega a imagem de "Game Over"
         fundo = pygame.image.load("Imagens/IMG-G_O.png")
@@ -181,6 +190,7 @@ while rodando:
                 # Volta para o menu do jogo
                 menu = Menu(tela)
                 opcao = menu.rodar()
+                volume = menu.volume
                 if opcao == "jogar":
                     reiniciar_jogo()
                     break
@@ -261,7 +271,7 @@ while rodando:
     if tecla[pygame.K_SPACE] == True and cooldown >= fps/1.9 and (tipo_tiro == "Default" or tipo_tiro == "Follower"):
         tiro = hitbox(aviaozinho.rect.midtop[0], aviaozinho.rect.midtop[1], "Imagens/bullet.png")
         som_tiro = pygame.mixer.Sound("Musicas/bulletshot-impact-sound-effect-230462.wav")
-        som_tiro.set_volume(1)
+        som_tiro.set_volume(volume*1.5)
         som_tiro.play() 
         grupo_tiro.add(tiro)
         if tipo_tiro == "Follower":
@@ -273,7 +283,7 @@ while rodando:
     # Se a tecla do espaço estiver pressionada, o cooldown for um terço do valor do fps, e o tipo do tiro for default, crie três linhas de tiros diferentes, e os guarde junto com a posição do meio do aviaozinho após a criação das balas (E resete o cooldown)
     elif tecla[pygame.K_SPACE] == True and cooldown >= fps and tipo_tiro == "Triplo":
         som_tiro_triplo = pygame.mixer.Sound("Musicas/mixkit-multiple-fireworks-explosions-1689.wav")
-        som_tiro_triplo.set_volume(1)
+        som_tiro_triplo.set_volume(volume*1.5)
         som_tiro_triplo.play()
         tiros = pygame.sprite.Group()  # Cria um novo grupo para os tiros
         tiro_middle = hitbox(aviaozinho.rect.midtop[0], aviaozinho.rect.midtop[1], "Imagens/bullet.png")
@@ -292,7 +302,7 @@ while rodando:
     
     elif tecla[pygame.K_SPACE] == True and cooldown >= fps * 1.2 and tipo_tiro == "Bomb":
         som_bomba = pygame.mixer.Sound("Musicas/266785551-aircraft-shoot-down-jet-engine.wav")
-        som_bomba.set_volume(1)
+        som_bomba.set_volume(volume*1.5)
         som_bomba.play()
         bomb = hitbox(aviaozinho.rect.midtop[0], aviaozinho.rect.midtop[1], "Imagens/bomb.png")
         bomb.ativacao = False  # A bomba começa desativada
@@ -312,24 +322,24 @@ while rodando:
             tipo_tiro = "Default"
         elif coletavel_id == constantes.TIRO_BOMBA:
             som_coletavel = pygame.mixer.Sound("Musicas/duffle-bag-lifting (online-audio-converter.com).wav")
-            som_coletavel.set_volume(1)
+            som_coletavel.set_volume(volume*1.5)
             som_coletavel.play()
             tipo_tiro = "Bomb"
         elif coletavel_id == constantes.ESCUDO_ON:
             escudo.ativacao = True
             som_escudo = pygame.mixer.Sound("Musicas/mixkit-video-game-health-recharge-2837.wav")
-            som_escudo.set_volume(1)
+            som_escudo.set_volume(volume*1.5)
             som_escudo.play()
         elif coletavel_id == constantes.ESCUDO_OFF:
             escudo.ativacao = False
         elif coletavel_id == constantes.TIRO_TRIPLO:
             som_coletavel = pygame.mixer.Sound("Musicas/duffle-bag-lifting (online-audio-converter.com).wav")
-            som_coletavel.set_volume(1)
+            som_coletavel.set_volume(volume*1.5)
             som_coletavel.play()
             tipo_tiro = "Triplo"
         elif coletavel_id == constantes.TIRO_LIL:
             som_coletavel = pygame.mixer.Sound("Musicas/mixkit-fast-car-drive-by-1538.wav")
-            som_coletavel.set_volume(1)
+            som_coletavel.set_volume(volume*1.5)
             som_coletavel.play()
             tipo_tiro = "Follower"
 
@@ -337,7 +347,7 @@ while rodando:
     tela.blit(fundo, (0, fundo_scroll))
 
     # O fundo se move para cima de três em três pixels
-    fundo_scroll += 7
+    fundo_scroll += fundo_scroll_velocidade
 
     # Caso o fundo chegue no último pixel superior (y), resete para a posição de fundo inicial
     if fundo_scroll > 0:
@@ -392,7 +402,7 @@ while rodando:
             if bomba.ativacao == True and bomba.tempo_existencia == 0:
                 bomba.image = pygame.image.load("Imagens/explosion.png")
                 som_explosao = pygame.mixer.Sound("Musicas/mixkit-8-bit-bomb-explosion-2811.wav")
-                som_explosao.set_volume(1)
+                som_explosao.set_volume(volume*1.5)
                 som_explosao.play()
                 bomba.rect = bomba.image.get_rect()
                 bomba.rect.center = [tempx, tempy]
@@ -455,7 +465,7 @@ while rodando:
     elif colisoes_tiro_inimigo and vida > 0:
         vida -= 1
         som_dano = pygame.mixer.Sound("Musicas/mixkit-arcade-video-game-explosion-2810.wav")
-        som_dano.set_volume(1)
+        som_dano.set_volume(volume*1.5)
         som_dano.play()
     # Verifica colisões entre inimigos e o aviaozinho
     colisoes_inimigos = pygame.sprite.groupcollide(grupo_inimigos, grupo_aviaozinho, True, False)
@@ -465,9 +475,10 @@ while rodando:
         gerenciador_coletaveis.grupo_rodape_escudo.empty()
 
     elif colisoes_inimigos and vida > 0:
+        img_faisca = pygame.image.load("Imagens/faisca.png")
         vida -= 1  # Exemplo: reduz a vida do jogador
         som_dano = pygame.mixer.Sound("Musicas/mixkit-arcade-video-game-explosion-2810.wav")
-        som_dano.set_volume(1)
+        som_dano.set_volume(volume*1.5)
         som_dano.play()
 
     # Combina todas as colisões em um único dicionário
@@ -491,7 +502,7 @@ while rodando:
     if tempo_spawn > fps * taxa_spawn:
         spawnar_inimigo()
         tempo_spawn = 0
-        fundo_scroll += 0.05
+        fundo_scroll_velocidade += 0.2
 
     if vida <= 1:
         for life in grupo_vida:
