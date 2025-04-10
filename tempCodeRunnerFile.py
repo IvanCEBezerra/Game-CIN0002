@@ -1,0 +1,1 @@
+pygame.mouse.set_visible(False)
