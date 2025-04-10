@@ -11,10 +11,8 @@ class inimigo_horizontal(hitbox):
         # Define a velocidade do inimigo
 
         # Define a direção do movimento do inimigo (1 = direita, -1 = esquerda)
-        self.direcao = -1
-
-        # Define a quantidade de pixels que o inimigo deve se mover para baixo
-        self.descer = 0
+        self.direcao = random.choice([-1, 1])
+        print(self.direcao) #debug
 
     def mover(self):
         # Move o inimigo horizontalmente de acordo com sua direção e velocidade
